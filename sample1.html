@@ -24,13 +24,27 @@
     <p-toolbar class="justify-between">
         <template #center>
             <div class="flex flex-wrap gap-2">
-                <a href="sample1.html"><p-button label="Form" size="small" outlined /></a>
-                <a href="sample2.html"><p-button label="Tabs/Swiper" size="small" outlined /></a>
-                <a href="sample3.html"><p-button label="DataTable" size="small" outlined /></a>
-                <a href="sample4.html"><p-button label="Tree/PickList" size="small" outlined /></a>
-                <a href="sample5.html"><p-button label="Buttons" size="small" outlined /></a>
-                <a href="sample6.html"><p-button label="Tag/Spinner/Toast" size="small" outlined /></a>
-                <a href="sample7.html"><p-button label="Overlays" size="small" outlined /></a>
+                <a href="sample1.html">
+                    <p-button label="Form" size="small" outlined/>
+                </a>
+                <a href="sample2.html">
+                    <p-button label="Tabs/Swiper" size="small" outlined/>
+                </a>
+                <a href="sample3.html">
+                    <p-button label="DataTable" size="small" outlined/>
+                </a>
+                <a href="sample4.html">
+                    <p-button label="Tree/PickList" size="small" outlined/>
+                </a>
+                <a href="sample5.html">
+                    <p-button label="Buttons" size="small" outlined/>
+                </a>
+                <a href="sample6.html">
+                    <p-button label="Tag/Spinner/Toast" size="small" outlined/>
+                </a>
+                <a href="sample7.html">
+                    <p-button label="Overlays" size="small" outlined/>
+                </a>
             </div>
         </template>
     </p-toolbar>
@@ -319,7 +333,7 @@
             const searchText = ref('');
 
             // InputMask 상태
-            const mask = reactive({ ssn: '', biz: '', mobile: '', tel: '' });
+            const mask = reactive({ssn: '', biz: '', mobile: '', tel: ''});
             // 마스크 패턴
             const mobileMask = computed(() => '999-9999-9999');
             const telMask = computed(() => (mask.tel && mask.tel.startsWith('02') ? '99-999-9999' : '999-999-9999'));
@@ -345,16 +359,16 @@
                     key: 'A',
                     label: 'A 그룹',
                     children: [
-                        { key: 'A-1', label: 'A-1 항목' },
-                        { key: 'A-2', label: 'A-2 항목' }
+                        {key: 'A-1', label: 'A-1 항목'},
+                        {key: 'A-2', label: 'A-2 항목'}
                     ]
                 },
                 {
                     key: 'B',
                     label: 'B 그룹',
                     children: [
-                        { key: 'B-1', label: 'B-1 항목' },
-                        { key: 'B-2', label: 'B-2 항목' }
+                        {key: 'B-1', label: 'B-1 항목'},
+                        {key: 'B-2', label: 'B-2 항목'}
                     ]
                 }
             ];
