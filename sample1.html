@@ -8,305 +8,309 @@
     <link href="css/primeicons.css" rel="stylesheet"/>
     <link href="/css/swiper-bundle.min.css" rel="stylesheet"/>
     <link href="css/custom.css" rel="stylesheet"/>
+    <link href="css/overlayscrollbars.min.css" rel="stylesheet"/>
 
     <script src="js/vue.global.js"></script>
     <script src="js/primevue.min.js"></script>
     <script src="js/aura.js"></script>
     <script src="js/tailwindcss.js"></script>
-    <script src="js/dayjs.min.js"></script>
     <script src="/js/swiper-bundle.min.js"></script>
+    <script src="/js/overlayscrollbars.browser.es6.min.js"></script>
 
 </head>
 <body class="bg-gray-100">
-<div id="app" class="max-w-4xl mx-auto p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Form)</span></h1>
+<div id="app">
+    <overlay-scrollbars style="max-height: 100vh;">
+        <div class="max-w-4xl mx-auto p-6 space-y-6">
+            <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Form)</span></h1>
 
-    <p-toolbar class="justify-between">
-        <template #center>
-            <div class="flex flex-wrap gap-2">
-                <a href="sample1.html">
-                    <p-button label="Form" size="small" outlined/>
-                </a>
-                <a href="sample2.html">
-                    <p-button label="Tabs/Swiper" size="small" outlined/>
-                </a>
-                <a href="sample3.html">
-                    <p-button label="DataTable" size="small" outlined/>
-                </a>
-                <a href="sample4.html">
-                    <p-button label="Tree/PickList" size="small" outlined/>
-                </a>
-                <a href="sample5.html">
-                    <p-button label="Buttons" size="small" outlined/>
-                </a>
-                <a href="sample6.html">
-                    <p-button label="Tag/Spinner/Toast" size="small" outlined/>
-                </a>
-                <a href="sample7.html">
-                    <p-button label="Overlays" size="small" outlined/>
-                </a>
-            </div>
-        </template>
-    </p-toolbar>
+            <p-toolbar class="justify-between">
+                <template #center>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="sample1.html">
+                            <p-button label="Form" size="small" outlined/>
+                        </a>
+                        <a href="sample2.html">
+                            <p-button label="Tabs/Swiper" size="small" outlined/>
+                        </a>
+                        <a href="sample3.html">
+                            <p-button label="DataTable" size="small" outlined/>
+                        </a>
+                        <a href="sample4.html">
+                            <p-button label="Tree/PickList" size="small" outlined/>
+                        </a>
+                        <a href="sample5.html">
+                            <p-button label="Buttons" size="small" outlined/>
+                        </a>
+                        <a href="sample6.html">
+                            <p-button label="Tag/Spinner/Toast" size="small" outlined/>
+                        </a>
+                        <a href="sample7.html">
+                            <p-button label="Overlays" size="small" outlined/>
+                        </a>
+                    </div>
+                </template>
+            </p-toolbar>
 
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">InputText</h2>
-        <p-input-text
-                v-model="name"
-                placeholder="이름을 입력하세요"
-                class="w-full"
-        ></p-input-text>
-        <p class="text-sm text-gray-600">표시값: <code>{{ name }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ name }}</code></p>
-
-        <div class="mt-4">
-            <h3 class="text-sm font-medium mb-2">InputText + 돋보기 아이콘 (오른쪽, IconField 사용)</h3>
-            <p-icon-field icon-position="right" class="w-full" @click="onSearch">
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">InputText</h2>
                 <p-input-text
-                        v-model="searchText"
+                        v-model="name"
+                        placeholder="이름을 입력하세요"
                         class="w-full"
-                        readonly
                 ></p-input-text>
-                <p-input-icon class="pi pi-search cursor-pointer"></p-input-icon>
-            </p-icon-field>
-            <p class="text-xs text-gray-600 mt-1">표시값: <code>{{ searchText }}</code></p>
-            <p class="text-xs text-gray-600">실제 상태값: <code>{{ searchText }}</code></p>
-        </div>
-    </section>
+                <p class="text-sm text-gray-600">표시값: <code>{{ name }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ name }}</code></p>
 
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">InputMask</h2>
-        <div class="space-y-3">
-            <div>
-                <label class="block text-sm mb-1">주민등록번호</label>
-                <p-input-mask
-                        v-model="mask.ssn"
-                        mask="999999-9999999"
-                        placeholder="######-#######"
+                <div class="mt-4">
+                    <h3 class="text-sm font-medium mb-2">InputText + 돋보기 아이콘 (오른쪽, IconField 사용)</h3>
+                    <p-icon-field icon-position="right" class="w-full" @click="onSearch">
+                        <p-input-text
+                                v-model="searchText"
+                                class="w-full"
+                                readonly
+                        ></p-input-text>
+                        <p-input-icon class="pi pi-search cursor-pointer"></p-input-icon>
+                    </p-icon-field>
+                    <p class="text-xs text-gray-600 mt-1">표시값: <code>{{ searchText }}</code></p>
+                    <p class="text-xs text-gray-600">실제 상태값: <code>{{ searchText }}</code></p>
+                </div>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">InputMask</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm mb-1">주민등록번호</label>
+                        <p-input-mask
+                                v-model="mask.ssn"
+                                mask="999999-9999999"
+                                placeholder="######-#######"
+                                class="w-full"
+                        ></p-input-mask>
+                        <p class="text-xs text-gray-600">표시값: <code>{{ mask.ssn }}</code></p>
+                        <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.ssn }}</code></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">사업자등록번호</label>
+                        <p-input-mask
+                                v-model="mask.biz"
+                                mask="999-99-99999"
+                                placeholder="###-##-#####"
+                                class="w-full"
+                        ></p-input-mask>
+                        <p class="text-xs text-gray-600">표시값: <code>{{ mask.biz }}</code></p>
+                        <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.biz }}</code></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">휴대폰번호</label>
+                        <p-input-mask
+                                v-model="mask.mobile"
+                                :mask="mobileMask"
+                                placeholder="010-1234-5678"
+                                class="w-full"
+                        ></p-input-mask>
+                        <p class="text-xs text-gray-600">표시값: <code>{{ mask.mobile }}</code></p>
+                        <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.mobile }}</code></p>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-1">전화번호(지역번호)</label>
+                        <p-input-mask
+                                v-model="mask.tel"
+                                :mask="telMask"
+                                placeholder="02-123-4567 또는 031-123-4567"
+                                class="w-full"
+                        ></p-input-mask>
+                        <p class="text-xs text-gray-600">표시값: <code>{{ mask.tel }}</code></p>
+                        <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.tel }}</code></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">InputNumber (오직 숫자만, 최솟/최댓값 있음)</h2>
+                <p-input-number
+                        v-model="amount"
+                        :min="0"
+                        :max="100"
                         class="w-full"
-                ></p-input-mask>
-                <p class="text-xs text-gray-600">표시값: <code>{{ mask.ssn }}</code></p>
-                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.ssn }}</code></p>
-            </div>
-            <div>
-                <label class="block text-sm mb-1">사업자등록번호</label>
-                <p-input-mask
-                        v-model="mask.biz"
-                        mask="999-99-99999"
-                        placeholder="###-##-#####"
+                ></p-input-number>
+                <p class="text-sm text-gray-600">표시값: <code>{{ amount }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ typeof amount === 'number' ? amount : Number(amount) }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">Textarea</h2>
+                <p-textarea
+                        v-model="bio"
+                        :auto-resize="true"
+                        :rows="3"
+                        placeholder="자기소개를 입력하세요"
                         class="w-full"
-                ></p-input-mask>
-                <p class="text-xs text-gray-600">표시값: <code>{{ mask.biz }}</code></p>
-                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.biz }}</code></p>
-            </div>
-            <div>
-                <label class="block text-sm mb-1">휴대폰번호</label>
-                <p-input-mask
-                        v-model="mask.mobile"
-                        :mask="mobileMask"
-                        placeholder="010-1234-5678"
+                ></p-textarea>
+                <p class="text-sm text-gray-600">표시값: <code>{{ bio }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ bio }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">Password</h2>
+                <p-password
+                        v-model="password"
+                        :toggle-mask="true"
+                        :feedback="false"
+                        placeholder="비밀번호 입력"
                         class="w-full"
-                ></p-input-mask>
-                <p class="text-xs text-gray-600">표시값: <code>{{ mask.mobile }}</code></p>
-                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.mobile }}</code></p>
-            </div>
-            <div>
-                <label class="block text-sm mb-1">전화번호(지역번호)</label>
-                <p-input-mask
-                        v-model="mask.tel"
-                        :mask="telMask"
-                        placeholder="02-123-4567 또는 031-123-4567"
+                ></p-password>
+                <p class="text-sm text-gray-600">표시값: <code>{{ password }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ password }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">Select</h2>
+                <p-select
+                        v-model="country"
+                        :options="countryOptions"
+                        option-label="label"
+                        option-value="value"
+                        placeholder="국가 선택"
+                        show-clear
+                        filter
                         class="w-full"
-                ></p-input-mask>
-                <p class="text-xs text-gray-600">표시값: <code>{{ mask.tel }}</code></p>
-                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.tel }}</code></p>
-            </div>
+                ></p-select>
+                <p class="text-sm text-gray-600">표시값: <code>{{ countryLabel }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ country }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">MultiSelect</h2>
+                <p-multi-select
+                        v-model="cities"
+                        :options="cityOptions"
+                        option-label="label"
+                        option-value="value"
+                        display="chip"
+                        placeholder="도시 선택"
+                        show-clear
+                        filter
+                        class="w-full"
+                >
+                </p-multi-select>
+                <p class="text-sm text-gray-600">표시값: <code>{{ cityLabels }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(cities) }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">TreeSelect</h2>
+                <p-tree-select
+                        v-model="treeValue"
+                        :options="treeOptions"
+                        placeholder="노드를 선택하세요"
+                        show-clear
+                        class="w-full"
+                ></p-tree-select>
+                <p class="text-sm text-gray-600">표시값: <code>{{ treeLabels }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(treeValue) }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">DatePicker</h2>
+                <p-date-picker
+                        v-model="date"
+                        date-format="yy-mm-dd"
+                        :min-date="minDate"
+                        :max-date="maxDate"
+                        show-button-bar
+                        show-icon
+                        fluid
+                        icon-display="input"
+                        :manual-input="false"
+                        class="w-full"
+                ></p-date-picker>
+                <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
+                <p class="text-sm text-gray-600">표시값: <code>{{ formattedDate }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateValue }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">DatePicker (Range)</h2>
+                <p-date-picker
+                        v-model="dateRange"
+                        selection-mode="range"
+                        date-format="yy-mm-dd"
+                        :min-date="minDate"
+                        :max-date="maxDate"
+                        show-button-bar
+                        show-icon
+                        fluid
+                        icon-display="input"
+                        :manual-input="false"
+                        class="w-full"
+                ></p-date-picker>
+                <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
+                <p class="text-sm text-gray-600">표시값: <code>{{ formattedDateRange }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateRangeValue }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">Checkbox</h2>
+                <div class="flex items-center gap-2">
+                    <p-checkbox
+                            v-model="agreements"
+                            input-id="agree1"
+                            value="agree"
+                            binary
+                    ></p-checkbox>
+                    <label class="cursor-default">약관에 동의합니다</label>
+                </div>
+                <p class="text-sm text-gray-600">표시값: <code>{{ agreements ? '동의' : '미동의' }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ agreements }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">RadioButton</h2>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <p-radio-button
+                                v-model="gender"
+                                value="M"
+                        ></p-radio-button>
+                        <span>남</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p-radio-button
+                                v-model="gender"
+                                value="F"
+                        ></p-radio-button>
+                        <span>여</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600">표시값: <code>{{ genderLabel }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ gender }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">ToggleButton</h2>
+                <p-toggle-button
+                        v-model="subscribed"
+                        on-label="ON"
+                        off-label="OFF"
+                ></p-toggle-button>
+                <p class="text-sm text-gray-600">표시값: <code>{{ subscribed ? 'ON' : 'OFF' }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ subscribed }}</code></p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-semibold mb-2">ToggleSwitch</h2>
+                <p-toggle-switch
+                        v-model="notifyEnabled"
+                        true-value="on"
+                        false-value="off"
+                ></p-toggle-switch>
+                <p class="text-sm text-gray-600">표시값: <code>{{ notifyEnabled === 'on' ? 'ON' : 'OFF' }}</code></p>
+                <p class="text-sm text-gray-600">실제 상태값: <code>{{ notifyEnabled }}</code></p>
+            </section>
         </div>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">InputNumber (오직 숫자만, 최솟/최댓값 있음)</h2>
-        <p-input-number
-                v-model="amount"
-                :min="0"
-                :max="100"
-                class="w-full"
-        ></p-input-number>
-        <p class="text-sm text-gray-600">표시값: <code>{{ amount }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ typeof amount === 'number' ? amount : Number(amount) }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">Textarea</h2>
-        <p-textarea
-                v-model="bio"
-                :auto-resize="true"
-                :rows="3"
-                placeholder="자기소개를 입력하세요"
-                class="w-full"
-        ></p-textarea>
-        <p class="text-sm text-gray-600">표시값: <code>{{ bio }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ bio }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">Password</h2>
-        <p-password
-                v-model="password"
-                :toggle-mask="true"
-                :feedback="false"
-                placeholder="비밀번호 입력"
-                class="w-full"
-        ></p-password>
-        <p class="text-sm text-gray-600">표시값: <code>{{ password }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ password }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">Select</h2>
-        <p-select
-                v-model="country"
-                :options="countryOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="국가 선택"
-                show-clear
-                filter
-                class="w-full"
-        ></p-select>
-        <p class="text-sm text-gray-600">표시값: <code>{{ countryLabel }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ country }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">MultiSelect</h2>
-        <p-multi-select
-                v-model="cities"
-                :options="cityOptions"
-                option-label="label"
-                option-value="value"
-                display="chip"
-                placeholder="도시 선택"
-                show-clear
-                filter
-                class="w-full"
-        >
-        </p-multi-select>
-        <p class="text-sm text-gray-600">표시값: <code>{{ cityLabels }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(cities) }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">TreeSelect</h2>
-        <p-tree-select
-                v-model="treeValue"
-                :options="treeOptions"
-                placeholder="노드를 선택하세요"
-                show-clear
-                class="w-full"
-        ></p-tree-select>
-        <p class="text-sm text-gray-600">표시값: <code>{{ treeLabels }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(treeValue) }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">DatePicker</h2>
-        <p-date-picker
-                v-model="date"
-                date-format="yy-mm-dd"
-                :min-date="minDate"
-                :max-date="maxDate"
-                show-button-bar
-                show-icon
-                fluid
-                icon-display="input"
-                :manual-input="false"
-                class="w-full"
-        ></p-date-picker>
-        <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
-        <p class="text-sm text-gray-600">표시값: <code>{{ formattedDate }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateValue }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">DatePicker (Range)</h2>
-        <p-date-picker
-                v-model="dateRange"
-                selection-mode="range"
-                date-format="yy-mm-dd"
-                :min-date="minDate"
-                :max-date="maxDate"
-                show-button-bar
-                show-icon
-                fluid
-                icon-display="input"
-                :manual-input="false"
-                class="w-full"
-        ></p-date-picker>
-        <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
-        <p class="text-sm text-gray-600">표시값: <code>{{ formattedDateRange }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateRangeValue }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">Checkbox</h2>
-        <div class="flex items-center gap-2">
-            <p-checkbox
-                    v-model="agreements"
-                    input-id="agree1"
-                    value="agree"
-                    binary
-            ></p-checkbox>
-            <label class="cursor-default">약관에 동의합니다</label>
-        </div>
-        <p class="text-sm text-gray-600">표시값: <code>{{ agreements ? '동의' : '미동의' }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ agreements }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">RadioButton</h2>
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
-                <p-radio-button
-                        v-model="gender"
-                        value="M"
-                ></p-radio-button>
-                <span>남</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <p-radio-button
-                        v-model="gender"
-                        value="F"
-                ></p-radio-button>
-                <span>여</span>
-            </div>
-        </div>
-        <p class="text-sm text-gray-600">표시값: <code>{{ genderLabel }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ gender }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">ToggleButton</h2>
-        <p-toggle-button
-                v-model="subscribed"
-                on-label="ON"
-                off-label="OFF"
-        ></p-toggle-button>
-        <p class="text-sm text-gray-600">표시값: <code>{{ subscribed ? 'ON' : 'OFF' }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ subscribed }}</code></p>
-    </section>
-
-    <section class="bg-white p-4 rounded shadow">
-        <h2 class="text-lg font-semibold mb-2">ToggleSwitch</h2>
-        <p-toggle-switch
-                v-model="notifyEnabled"
-                true-value="on"
-                false-value="off"
-        ></p-toggle-switch>
-        <p class="text-sm text-gray-600">표시값: <code>{{ notifyEnabled === 'on' ? 'ON' : 'OFF' }}</code></p>
-        <p class="text-sm text-gray-600">실제 상태값: <code>{{ notifyEnabled }}</code></p>
-    </section>
-
+    </overlay-scrollbars>
 </div>
 
 <script>
@@ -557,6 +561,16 @@
     app.component('p-input-icon', InputIcon);
     app.component('p-toolbar', Toolbar);
     app.component('p-button', Button);
+
+    app.component('overlay-scrollbars', {
+        props: ['style', 'class'],
+        mounted() {
+            window.OverlayScrollbarsGlobal.OverlayScrollbars(this.$el, {scrollbars: {autoHide: 'scroll'}});
+        },
+        render() {
+            return Vue.h('div', {style: this.style, class: this.class}, this.$slots.default());
+        }
+    });
 
     app.mount('#app');
 </script>
