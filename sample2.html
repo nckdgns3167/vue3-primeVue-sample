@@ -18,9 +18,23 @@
 </head>
 <body class="bg-gray-100">
 <div id="app" class="max-w-4xl mx-auto p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample (Tabs, Swiper)</h1>
+    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Tabs, Swiper)</span></h1>
 
-    <section class="bg-white border rounded-xl p-4 shadow-sm">
+    <p-toolbar class="justify-between">
+        <template #center>
+            <div class="flex flex-wrap gap-2">
+                <a href="sample1.html"><p-button label="Form" size="small" outlined /></a>
+                <a href="sample2.html"><p-button label="Tabs/Swiper" size="small" outlined /></a>
+                <a href="sample3.html"><p-button label="DataTable" size="small" outlined /></a>
+                <a href="sample4.html"><p-button label="Tree/PickList" size="small" outlined /></a>
+                <a href="sample5.html"><p-button label="Buttons" size="small" outlined /></a>
+                <a href="sample6.html"><p-button label="Tag/Spinner/Toast" size="small" outlined /></a>
+                <a href="sample7.html"><p-button label="Overlays" size="small" outlined /></a>
+            </div>
+        </template>
+    </p-toolbar>
+
+    <section class="bg-white p-4 rounded shadow">
         <p-tabs class="menu-tab-list" v-model:value="selected">
             <!-- 탭바 (p-tab-list 자체에 ref를 달아 $el로 DOM 접근) -->
             <p-tab-list ref="tabListComp">
@@ -259,12 +273,16 @@
 
     // PrimeVue 등록
     app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
-    const {Tabs, TabList, Tab, TabPanels, TabPanel} = PrimeVue;
+
+    const {Tabs, TabList, Tab, TabPanels, TabPanel, Toolbar, Button} = PrimeVue;
+
     app.component('p-tabs', Tabs);
     app.component('p-tab-list', TabList);
     app.component('p-tab', Tab);
     app.component('p-tab-panels', TabPanels);
     app.component('p-tab-panel', TabPanel);
+    app.component('p-toolbar', Toolbar);
+    app.component('p-button', Button);
 
     // Swiper 컴포넌트 등록
     app.component('swiper', SwiperComponent);

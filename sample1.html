@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <title>Vue3 + PrimeVue Sample</title>
     <meta charset="UTF-8"/>
+    <title>Vue3 + PrimeVue Sample</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <link href="css/primeicons.css" rel="stylesheet">
+    <link href="css/primeicons.css" rel="stylesheet"/>
+    <link href="/css/swiper-bundle.min.css" rel="stylesheet"/>
+    <link href="css/custom.css" rel="stylesheet"/>
 
     <script src="js/vue.global.js"></script>
     <script src="js/primevue.min.js"></script>
     <script src="js/aura.js"></script>
     <script src="js/tailwindcss.js"></script>
     <script src="js/dayjs.min.js"></script>
+    <script src="/js/swiper-bundle.min.js"></script>
 
 </head>
 <body class="bg-gray-100">
+<div id="app" class="max-w-4xl mx-auto p-6 space-y-6">
+    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Form)</span></h1>
 
-<div id="app" class="p-6 max-w-4xl mx-auto space-y-8">
-    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample (Form)</h1>
+    <p-toolbar class="justify-between">
+        <template #center>
+            <div class="flex flex-wrap gap-2">
+                <a href="sample1.html"><p-button label="Form" size="small" outlined /></a>
+                <a href="sample2.html"><p-button label="Tabs/Swiper" size="small" outlined /></a>
+                <a href="sample3.html"><p-button label="DataTable" size="small" outlined /></a>
+                <a href="sample4.html"><p-button label="Tree/PickList" size="small" outlined /></a>
+                <a href="sample5.html"><p-button label="Buttons" size="small" outlined /></a>
+                <a href="sample6.html"><p-button label="Tag/Spinner/Toast" size="small" outlined /></a>
+                <a href="sample7.html"><p-button label="Overlays" size="small" outlined /></a>
+            </div>
+        </template>
+    </p-toolbar>
 
     <section class="bg-white p-4 rounded shadow">
         <h2 class="text-lg font-semibold mb-2">InputText</h2>
@@ -508,9 +524,8 @@
         }
     });
 
-    const {InputText, Textarea, Password, Select, MultiSelect, DatePicker, Checkbox, RadioButton, InputNumber, ToggleButton, InputMask, IconField, InputIcon, ToggleSwitch, TreeSelect} = PrimeVue;
+    const {InputText, Textarea, Password, Select, MultiSelect, DatePicker, Checkbox, RadioButton, InputNumber, ToggleButton, InputMask, IconField, InputIcon, ToggleSwitch, TreeSelect, Toolbar, Button} = PrimeVue;
 
-    // p-* kebab-case aliases
     app.component('p-input-text', InputText);
     app.component('p-textarea', Textarea);
     app.component('p-password', Password);
@@ -526,6 +541,8 @@
     app.component('p-input-mask', InputMask);
     app.component('p-icon-field', IconField);
     app.component('p-input-icon', InputIcon);
+    app.component('p-toolbar', Toolbar);
+    app.component('p-button', Button);
 
     app.mount('#app');
 </script>
