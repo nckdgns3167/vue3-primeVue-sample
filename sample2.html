@@ -1,1 +1,276 @@
-Tab + Swiper/ Accordion
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Vue3 + PrimeVue Sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link href="css/primeicons.css" rel="stylesheet"/>
+    <link href="/css/swiper-bundle.min.css" rel="stylesheet"/>
+    <link href="css/custom.css" rel="stylesheet"/>
+
+    <script src="js/vue.global.js"></script>
+    <script src="js/primevue.min.js"></script>
+    <script src="js/aura.js"></script>
+    <script src="js/tailwindcss.js"></script>
+    <script src="/js/swiper-bundle.min.js"></script>
+
+</head>
+<body class="bg-gray-100">
+<div id="app" class="max-w-4xl mx-auto p-6 space-y-6">
+    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample (Tabs, Swiper)</h1>
+
+    <section class="bg-white border rounded-xl p-4 shadow-sm">
+        <p-tabs class="menu-tab-list" v-model:value="selected">
+            <!-- 탭바 (p-tab-list 자체에 ref를 달아 $el로 DOM 접근) -->
+            <p-tab-list ref="tabListComp">
+                <div class="tab-header">
+                    <button ref="prevBtnRef" type="button" class="tabs-nav-btn tabs-prev" aria-label="이전">
+                        <i class="pi pi-chevron-left"></i>
+                    </button>
+
+                    <swiper
+                            class="tabs-swiper"
+                            :options="swiperOptions"
+                            @ready="onSwiperReady"
+                    >
+                        <template #default>
+                            <swiper-slide v-for="(t,i) in tabs" :key="t.key" class="tab-slide">
+                                <div class="tab-item-wrap">
+                                    <p-tab :value="i">
+                                        <span class="tab-text">{{ t.label }}</span>
+                                        <button type="button" class="tab-close" aria-label="닫기"
+                                                @click.stop="console && console.log('close click', t.key)">
+                                            <i class="pi pi-times"></i>
+                                        </button>
+                                    </p-tab>
+                                </div>
+                            </swiper-slide>
+                        </template>
+                    </swiper>
+
+                    <button ref="nextBtnRef" type="button" class="tabs-nav-btn tabs-next" aria-label="다음">
+                        <i class="pi pi-chevron-right"></i>
+                    </button>
+                </div>
+            </p-tab-list>
+
+            <!-- 탭 패널 -->
+            <p-tab-panels>
+                <p-tab-panel v-for="(t,i) in tabs" :key="t.key" :value="i">
+                    <div class="text-gray-700">
+                        {{ t.desc }}
+                    </div>
+                </p-tab-panel>
+            </p-tab-panels>
+        </p-tabs>
+    </section>
+</div>
+
+<script>
+    const {createApp, ref, onMounted, onBeforeUnmount, h, watch, nextTick, computed} = Vue;
+
+    /* ─────────────────────────────────────────────────────────────
+       Swiper 래퍼: 내부 DOM refs를 ready 이벤트로 부모에 전달
+    ───────────────────────────────────────────────────────────── */
+    const SwiperComponent = {
+        name: 'swiper',
+        emits: ['ready'],
+        props: {options: {type: Object, default: () => ({})}},
+        setup(props, {slots, emit}) {
+            const rootEl = ref(null);
+            const wrapperEl = ref(null);
+            let instance = null;
+
+            onMounted(() => {
+                instance = new Swiper(rootEl.value, props.options || {});
+                emit('ready', {rootEl: rootEl.value, wrapperEl: wrapperEl.value, instance});
+            });
+            onBeforeUnmount(() => {
+                if (instance && typeof instance.destroy === 'function') instance.destroy(true, true);
+            });
+
+            return () => h('div', {ref: rootEl, class: 'swiper'}, [
+                h('div', {ref: wrapperEl, class: 'swiper-wrapper'}, slots.default ? slots.default() : [])
+            ]);
+        }
+    };
+
+    const SwiperSlideComponent = {
+        name: 'swiper-slide',
+        setup(_, {slots}) {
+            return () => h('div', {class: 'swiper-slide'}, slots.default ? slots.default() : []);
+        }
+    };
+
+    /* ─────────────────────────────────────────────────────────────
+       순수 함수(Functional) & 사이드 이펙트 분리
+    ───────────────────────────────────────────────────────────── */
+
+    /**
+     * 순수 함수(pure function):
+     * 입력(listRect, tabRect, bleed) -> 출력({x, w})
+     * 외부 상태에 의존/변경하지 않음.
+     */
+    const computeSeam = (listRect, tabRect, bleed = 2) => {
+        if (!listRect || !tabRect) return {x: -9999, w: 0};
+        let x = tabRect.left - listRect.left;
+        let w = tabRect.width;
+        x = Math.max(0, x - bleed);
+        w = Math.min(listRect.width, w + bleed * 2);
+        return {x, w};
+    };
+
+    /**
+     * 측정 함수(measure):
+     * 선택 인덱스를 기반으로 탭 DOM을 찾아 Rect들을 반환.
+     * (DOM 접근은 불가피하므로 여기서만 모아 수행)
+     */
+    const measureRects = (tabListEl, selectedIndex) => {
+        if (!tabListEl) return null;
+        const tabs = tabListEl.querySelectorAll('.p-tab');
+        if (!tabs || !tabs.length) return null;
+
+        // 우선 selectedIndex를 사용하고, 방어적으로 범위 보정
+        const idx = Math.min(Math.max(0, selectedIndex), tabs.length - 1);
+        let activeEl = tabs[idx];
+
+        // 혹시 aria-selected가 정확히 반영될 경우 우선 사용
+        const ariaActive = tabListEl.querySelector('.p-tab[aria-selected="true"]');
+        if (ariaActive) activeEl = ariaActive;
+
+        const listRect = tabListEl.getBoundingClientRect();
+        const tabRect = activeEl.getBoundingClientRect();
+        return {listRect, tabRect};
+    };
+
+    /**
+     * 사이드 이펙트: CSS 변수에 결과 적용
+     */
+    const applySeam = (tabListEl, seam) => {
+        if (!tabListEl || !seam) return;
+        tabListEl.style.setProperty('--seam-mask-x', `${seam.x}px`);
+        tabListEl.style.setProperty('--seam-mask-w', `${seam.w}px`);
+    };
+
+    /* ─────────────────────────────────────────────────────────────
+       App
+    ───────────────────────────────────────────────────────────── */
+    const app = createApp({
+        setup() {
+            const tabs = ref([
+                {key: 't1', label: '초과근무신청', desc: '탭 1 내용입니다.'},
+                {key: 't2', label: '시설관리', desc: '탭 2 내용입니다.'},
+                {key: 't3', label: '검사계획관리', desc: '탭 3 내용입니다.'},
+                {key: 't4', label: '검사결과등록', desc: '탭 4 내용입니다.'},
+                {key: 't5', label: '시설검사결과등록', desc: '탭 5 내용입니다.'},
+                {key: 't6', label: '시설검사결과등록', desc: '탭 6 내용입니다.'},
+            ]);
+            const selected = ref(0);
+
+            // PrimeVue p-tab-list 컴포넌트 ref → DOM은 tabListComp.value.$el
+            const tabListComp = ref(null);
+            const tabListEl = computed(() => tabListComp.value ? tabListComp.value.$el : null);
+
+            // Swiper 및 네비 버튼 refs
+            const swiperWrapperEl = ref(null);
+            const prevBtnRef = ref(null);
+            const nextBtnRef = ref(null);
+
+            // Swiper 옵션
+            const swiperOptions = {
+                slidesPerView: 5,
+                spaceBetween: 5,
+                watchOverflow: false,
+                navigation: {
+                    nextEl: '.menu-tab-list .tabs-next',
+                    prevEl: '.menu-tab-list .tabs-prev'
+                }
+            };
+
+            // Swiper ready 콜백(부모에 내부 DOM/인스턴스 전달받음)
+            const onSwiperReady = ({wrapperEl}) => {
+                swiperWrapperEl.value = wrapperEl;
+                // 초기 렌더 뒤 첫 계산
+                nextTick(updateSeamMaskSafe);
+            };
+
+            // 안전한 업데이트(측정 -> 계산 -> 적용) 파이프라인
+            const updateSeamMaskSafe = () => {
+                const listEl = tabListEl.value;
+                const m = measureRects(listEl, selected.value);
+                if (!m) return;
+                const seam = computeSeam(m.listRect, m.tabRect, 2);
+                applySeam(listEl, seam);
+            };
+
+            // 반응: 선택 변경
+            watch(selected, async () => {
+                await nextTick();
+                updateSeamMaskSafe();
+            });
+
+            // 리스너 저장용
+            let onResize, onTransitionEnd, onPrevClick, onNextClick;
+
+            onMounted(() => {
+                // 초기 계산
+                nextTick(updateSeamMaskSafe);
+
+                // 윈도우 리사이즈
+                onResize = () => updateSeamMaskSafe();
+                window.addEventListener('resize', onResize);
+
+                // Swiper wrapper 이동 애니메이션 종료 시 재계산
+                onTransitionEnd = () => updateSeamMaskSafe();
+                // wrapper는 Swiper ready 이후에 ref가 들어올 수 있음 → 존재 시에만
+                const tryBindWrapper = () => {
+                    if (swiperWrapperEl.value) {
+                        swiperWrapperEl.value.addEventListener('transitionend', onTransitionEnd);
+                    }
+                };
+                tryBindWrapper();
+
+                // prev/next 버튼 클릭 직후(Transform 시작)에도 한 번 더
+                onPrevClick = () => setTimeout(updateSeamMaskSafe, 0);
+                onNextClick = () => setTimeout(updateSeamMaskSafe, 0);
+                prevBtnRef.value && prevBtnRef.value.addEventListener('click', onPrevClick);
+                nextBtnRef.value && nextBtnRef.value.addEventListener('click', onNextClick);
+            });
+
+            onBeforeUnmount(() => {
+                window.removeEventListener('resize', onResize);
+                if (swiperWrapperEl.value) {
+                    swiperWrapperEl.value.removeEventListener('transitionend', onTransitionEnd);
+                }
+                prevBtnRef.value && prevBtnRef.value.removeEventListener('click', onPrevClick);
+                nextBtnRef.value && nextBtnRef.value.removeEventListener('click', onNextClick);
+            });
+
+            return {
+                tabs, selected,
+                swiperOptions,
+                tabListComp,
+                prevBtnRef, nextBtnRef,
+                onSwiperReady
+            };
+        },
+    });
+
+    // PrimeVue 등록
+    app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
+    const {Tabs, TabList, Tab, TabPanels, TabPanel} = PrimeVue;
+    app.component('p-tabs', Tabs);
+    app.component('p-tab-list', TabList);
+    app.component('p-tab', Tab);
+    app.component('p-tab-panels', TabPanels);
+    app.component('p-tab-panel', TabPanel);
+
+    // Swiper 컴포넌트 등록
+    app.component('swiper', SwiperComponent);
+    app.component('swiper-slide', SwiperSlideComponent);
+
+    app.mount('#app');
+</script>
+</body>
+</html>

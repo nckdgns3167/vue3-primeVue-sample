@@ -1,0 +1,33 @@
+/* [START] 상단 탭 관련 */
+/* 레이어링: 탭바가 패널 위로 오게 */
+.menu-tab-list { position: relative; }
+.menu-tab-list .p-tablist { position: relative; z-index: 2; }
+.menu-tab-list .p-tabpanels { position: relative; z-index: 1; margin-top: -1px; border-top-left-radius: 0; border-top-right-radius: 0; }
+
+/* 탭바 헤더 */
+.menu-tab-list .tab-header { display: flex; align-items: center; gap: .5rem; width: 100%; }
+
+.menu-tab-list .tabs-swiper { flex: 1 1 auto; position: relative; }
+.menu-tab-list .tabs-swiper .swiper-wrapper { min-height: 52px; }
+
+/* 좌/우 네비 버튼 */
+.menu-tab-list .tabs-nav-btn { width: 34px; height: 34px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; background: #fff; cursor: pointer; transition: opacity .12s ease, background .12s ease; }
+.menu-tab-list .tabs-nav-btn:hover { background: var(--p-surface-100, #f3f4f6); }
+.menu-tab-list .tabs-nav-btn.swiper-button-disabled { opacity: .4; pointer-events: none; }
+
+/* seam-mask: 활성 탭 아래만 패널 top border를 가리는 스트립 */
+.menu-tab-list .p-tablist { --seam-mask-x: -9999px; --seam-mask-w: 0px; }
+.menu-tab-list .p-tablist::before { content: ""; position: absolute; left: var(--seam-mask-x); width: var(--seam-mask-w); height: 1px; bottom: 0; background: #fff; pointer-events: none; z-index: 5; }
+
+/* PrimeVue 탭 스타일 보강 */
+.menu-tab-list .p-tab { padding: 6px 8px 4px !important; display: flex; align-items: center; gap: 6px; width: 142px; height: 52px; max-height: 52px; border-color: #d5d5d5 !important; border-width: 1px !important; border-radius: 10px 10px 0 0; border-bottom: none !important; background: #fff; z-index: 2; }
+.menu-tab-list .p-tab .tab-text { flex: 1 1 auto; min-width: 0; font-size: .944rem; font-weight: 500; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+.menu-tab-list .p-tab .tab-close { flex: 0 0 24px; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; background: transparent; border: none; cursor: pointer; }
+.menu-tab-list .p-tab .tab-close:hover { background: var(--p-surface-100, #f3f4f6); color: #111827; }
+.menu-tab-list .p-tab[aria-selected="true"] .tab-close, .menu-tab-list .p-tab.p-tab-active .tab-close, .menu-tab-list .p-tab.p-highlight .tab-close { color: #3864e3; }
+.menu-tab-list .p-tab[aria-selected="true"], .menu-tab-list .p-tab.p-tab-active, .menu-tab-list .p-tab.p-highlight { border-color: #3864e3 !important; color: #3864e3; box-shadow: 2px 0px 2px rgba(0, 0, 0, .12); }
+
+/* PrimeVue 활성 인디케이터 제거 */
+.menu-tab-list .p-tablist .p-tablist-active-bar, .menu-tab-list .p-tablist .p-tablist-active-indicator, .menu-tab-list .p-tabs .p-tablist-active-bar, .menu-tab-list .p-tabs .p-tablist-active-indicator { display: none !important; }
+.menu-tab-list .p-tab::after, .menu-tab-list .p-tab.p-tab-active::after, .menu-tab-list .p-tab[aria-selected="true"]::after { content: none !important; }
+/* [ END ] 상단 탭 관련 */
