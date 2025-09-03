@@ -54,13 +54,18 @@
 
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">기본</h2>
-                <!-- ★ 디렉티브 추가 -->
                 <p-datatable
                         :value="products"
                         :removable-sort="true"
                         scroll-height="flex"
                 >
-                    <p-column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header" :sortable="col.sortable !== false" :removable-sort="col.removableSort !== false"></p-column>
+                    <p-column v-for="col in columns"
+                              :key="col.field"
+                              :field="col.field"
+                              :header="col.header"
+                              :sortable="col.sortable !== false"
+                              :removable-sort="col.removableSort !== false"
+                              :style="{ width: col.width, textAlign: col.align }"></p-column>
                 </p-datatable>
             </section>
 
@@ -71,7 +76,6 @@
                     <!-- Single Selection -->
                     <div>
                         <h3 class="font-medium mb-2">Single</h3>
-                        <!-- ★ 디렉티브 추가 -->
                         <p-datatable
                                 :value="products"
                                 data-key="code"
@@ -80,19 +84,21 @@
                                 v-model:selection="selectedProduct"
                                 :meta-key-selection="false"
                         >
-                            <p-column field="code" header="Code"></p-column>
-                            <p-column field="name" header="Name"></p-column>
-                            <p-column field="category" header="Category"></p-column>
-                            <p-column field="quantity" header="Quantity"></p-column>
-                            <p-column field="price" header="Price"></p-column>
+                            <p-column v-for="col in columns"
+                                      :key="col.field" :field="col.field"
+                                      :header="col.header"
+                                      :sortable="col.sortable !== false"
+                                      :removable-sort="col.removableSort !== false"
+                                      :style="{ width: col.width, textAlign: col.align }"></p-column>
                         </p-datatable>
-                        <div class="text-sm text-gray-600 mt-2">선택: {{ selectedProduct ? selectedProduct.name + ' (' + selectedProduct.code + ')' : '없음' }}</div>
+                        <div class="text-sm text-gray-600 mt-2">선택:
+                            {{ selectedProduct ? selectedProduct.name + ' (' + selectedProduct.code + ')' : '없음' }}
+                        </div>
                     </div>
 
                     <!-- Multiple Selection -->
                     <div>
                         <h3 class="font-medium mb-2">Multiple</h3>
-                        <!-- ★ 디렉티브 추가 -->
                         <p-datatable
                                 :value="products"
                                 data-key="code"
@@ -100,12 +106,17 @@
                                 v-model:selection="selectedProducts"
                                 :meta-key-selection="false"
                         >
-                            <p-column selection-mode="multiple" header-style="width:3rem" frozen align-frozen="left"></p-column>
-                            <p-column field="code" header="Code" style="min-width:10rem"></p-column>
-                            <p-column field="name" header="Name" style="min-width:12rem"></p-column>
-                            <p-column field="category" header="Category" style="min-width:10rem"></p-column>
-                            <p-column field="quantity" header="Quantity" style="min-width:8rem; text-align:right"></p-column>
-                            <p-column field="price" header="Price" style="min-width:8rem; text-align:right"></p-column>
+                            <p-column selection-mode="multiple"
+                                      header-style="width:3rem"
+                                      frozen align-frozen="left"
+                                      :column-resizable-disabled="true"></p-column>
+                            <p-column v-for="col in columns"
+                                      :key="col.field"
+                                      :field="col.field"
+                                      :header="col.header"
+                                      :sortable="col.sortable !== false"
+                                      :removable-sort="col.removableSort !== false"
+                                      :style="{ width: col.width, textAlign: col.align }"></p-column>
                         </p-datatable>
                         <div class="text-sm text-gray-600 mt-2">선택 개수: {{ selectedProducts.length }}개</div>
                     </div>
@@ -115,7 +126,6 @@
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">Row 선택 이벤트</h2>
                 <p class="text-sm text-gray-600 mb-2">single 선택 모드에서 row를 선택하면 해당 row의 내용을 alert로 표시합니다.</p>
-                <!-- ★ 디렉티브 추가 -->
                 <p-datatable
                         :value="products"
                         data-key="code"
@@ -124,11 +134,13 @@
                         :meta-key-selection="false"
                         @row-select="onRowSelect"
                 >
-                    <p-column field="code" header="Code"></p-column>
-                    <p-column field="name" header="Name"></p-column>
-                    <p-column field="category" header="Category"></p-column>
-                    <p-column field="quantity" header="Quantity"></p-column>
-                    <p-column field="price" header="Price"></p-column>
+                    <p-column v-for="col in columns"
+                              :key="col.field"
+                              :field="col.field"
+                              :header="col.header"
+                              :sortable="col.sortable !== false"
+                              :removable-sort="col.removableSort !== false"
+                              :style="{ width: col.width, textAlign: col.align }"></p-column>
                 </p-datatable>
             </section>
 
@@ -139,18 +151,20 @@
                 <!-- Case 1: 컨테이너 높이만큼 자동 설정 (flex 높이) -->
                 <div>
                     <h3 class="font-medium mb-2">Case 1: 컨테이너 높이 자동(Flex)</h3>
-                    <p class="text-xs text-gray-500 mb-2">컨테이너에 고정 높이를 주고, DataTable은 scrollable + scrollHeight="flex"로 컨테이너를 가득 채웁니다.</p>
+                    <p class="text-xs text-gray-500 mb-2">컨테이너에 고정 높이를 주고, DataTable은 scrollable + scrollHeight="flex"로
+                        컨테이너를 가득 채웁니다.</p>
                     <div class="border rounded p-2 h-64">
-                        <!-- ★ 디렉티브 추가 -->
                         <p-datatable
                                 :value="products"
                                 scroll-height="flex"
                         >
-                            <p-column field="code" header="Code"></p-column>
-                            <p-column field="name" header="Name"></p-column>
-                            <p-column field="category" header="Category"></p-column>
-                            <p-column field="quantity" header="Quantity"></p-column>
-                            <p-column field="price" header="Price"></p-column>
+                            <p-column v-for="col in columns"
+                                      :key="col.field"
+                                      :field="col.field"
+                                      :header="col.header"
+                                      :sortable="col.sortable !== false"
+                                      :removable-sort="col.removableSort !== false"
+                                      :style="{ width: col.width, textAlign: col.align }"></p-column>
                         </p-datatable>
                     </div>
                 </div>
@@ -159,16 +173,17 @@
                 <div>
                     <h3 class="font-medium mb-2">Case 2: 고정 높이</h3>
                     <p class="text-xs text-gray-500 mb-2">DataTable에 고정 높이를 지정하여 본문을 내부 스크롤합니다.</p>
-                    <!-- ★ 디렉티브 추가 -->
                     <p-datatable
                             :value="products"
                             scroll-height="300px"
                     >
-                        <p-column field="code" header="Code"></p-column>
-                        <p-column field="name" header="Name"></p-column>
-                        <p-column field="category" header="Category"></p-column>
-                        <p-column field="quantity" header="Quantity"></p-column>
-                        <p-column field="price" header="Price"></p-column>
+                        <p-column v-for="col in columns"
+                                  :key="col.field"
+                                  :field="col.field"
+                                  :header="col.header"
+                                  :sortable="col.sortable !== false"
+                                  :removable-sort="col.removableSort !== false"
+                                  :style="{ width: col.width, textAlign: col.align }"></p-column>
                     </p-datatable>
                 </div>
             </section>
@@ -177,14 +192,13 @@
                 <h2 class="text-lg font-semibold mb-2">Row Expansion(서브 그리드)</h2>
                 <p class="text-sm text-gray-600">행을 펼쳐서 상세 정보 또는 서브 그리드를 표시하는 예제입니다.</p>
 
-                <!-- ★ 디렉티브 추가 -->
                 <p-datatable
                         data-key="code"
                         :value="productsWithDetails"
                         v-model:expanded-rows="expandedRows"
                         scroll-height="flex"
                 >
-                    <p-column expander style="width:3rem" frozen align-frozen="left"></p-column>
+                    <p-column expander style="width:3rem" frozen align-frozen="left" :column-resizable-disabled="true"></p-column>
                     <p-column field="code" header="Code" style="min-width:10rem"></p-column>
                     <p-column field="name" header="Name" style="min-width:14rem"></p-column>
                     <p-column field="category" header="Category" style="min-width:12rem"></p-column>
@@ -213,14 +227,13 @@
                                 <p-datatable
                                         :value="data.items"
                                         size="small"
-                                        :scrollable="false"
-                                        :table-style="{ width: 'auto' }"
+                                        :table-style="{ minWidth: '50rem' }"
                                         style="display:inline-block"
                                 >
-                                    <p-column field="id" header="#" style="width:4rem"></p-column>
-                                    <p-column field="desc" header="Item" style="width:10rem"></p-column>
-                                    <p-column field="qty" header="Qty" style="width:6rem"></p-column>
-                                    <p-column field="amount" header="Amount" style="width:8rem"></p-column>
+                                    <p-column field="id" header="#"></p-column>
+                                    <p-column field="desc" header="Item"></p-column>
+                                    <p-column field="qty" header="Qty"></p-column>
+                                    <p-column field="amount" header="Amount"></p-column>
                                 </p-datatable>
                             </div>
                             <div v-else class="text-sm text-gray-500">세부 항목이 없습니다.</div>
@@ -230,7 +243,32 @@
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
-                <h2 class="text-lg font-semibold mb-2">높이 설정</h2>
+                <h2 class="text-lg font-semibold mb-2">Frozen Rows</h2>
+                <p class="text-sm text-gray-600">.</p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Virtual Scroll</h2>
+                <p class="text-sm text-gray-600">.</p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Column Group</h2>
+                <p class="text-sm text-gray-600">.</p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Edit Cell</h2>
+                <p class="text-sm text-gray-600">.</p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Add & Delete Row</h2>
+                <p class="text-sm text-gray-600">.</p>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Excel Download (Export)</h2>
                 <p class="text-sm text-gray-600">.</p>
             </section>
         </div>
@@ -238,184 +276,256 @@
 </div>
 
 <script>
-    const {h, createApp, ref, withDirectives} = Vue;
+  const {h, createApp, ref, withDirectives} = Vue;
 
-    const app = createApp({
-        setup() {
-            const products = ref([
-                {code: 'P100', name: 'Bamboo Watch', category: 'Accessories', quantity: 24, price: 65},
-                {code: 'P101', name: 'Black Watch', category: 'Accessories', quantity: 61, price: 72},
-                {code: 'P102', name: 'Blue Band', category: 'Fitness', quantity: 2, price: 29},
-                {code: 'P103', name: 'Game Controller', category: 'Electronics', quantity: 99, price: 99},
-                {code: 'P104', name: 'Gaming Set', category: 'Electronics', quantity: 63, price: 299},
-                {code: 'P105', name: 'Green Earbuds', category: 'Audio', quantity: 5, price: 49},
-                {code: 'P106', name: 'USB Cable', category: 'Accessories', quantity: 150, price: 9},
-            ]);
+  const app = createApp({
+    setup() {
+      const products = ref([
+        {code: 'P100', name: 'Bamboo Watch', category: 'Accessories', quantity: 24, price: 65},
+        {code: 'P101', name: 'Black Watch', category: 'Accessories', quantity: 61, price: 72},
+        {code: 'P102', name: 'Blue Band', category: 'Fitness', quantity: 2, price: 29},
+        {code: 'P103', name: 'Game Controller', category: 'Electronics', quantity: 99, price: 99},
+        {code: 'P104', name: 'Gaming Set', category: 'Electronics', quantity: 63, price: 299},
+        {code: 'P105', name: 'Green Earbuds', category: 'Audio', quantity: 5, price: 49},
+        {code: 'P106', name: 'USB Cable', category: 'Accessories', quantity: 150, price: 9},
+      ]);
 
-            const productsWithDetails = ref([
-                {code: 'P100', name: 'Bamboo Watch', category: 'Accessories', quantity: 24, price: 65, items: [{id: 1, desc: 'Strap', qty: 1, amount: 15}, {id: 2, desc: 'Gift Box', qty: 1, amount: 5}]},
-                {code: 'P101', name: 'Black Watch', category: 'Accessories', quantity: 61, price: 72, items: [{id: 1, desc: 'Warranty(2y)', qty: 1, amount: 0}]},
-                {code: 'P102', name: 'Blue Band', category: 'Fitness', quantity: 2, price: 29, items: []},
-                {code: 'P103', name: 'Game Controller', category: 'Electronics', quantity: 99, price: 99, items: [{id: 1, desc: 'USB-C Cable', qty: 1, amount: 9}, {id: 2, desc: 'Carry Pouch', qty: 1, amount: 12}]},
-                {
-                    code: 'P104',
-                    name: 'Gaming Set',
-                    category: 'Electronics',
-                    quantity: 63,
-                    price: 299,
-                    items: [{id: 1, desc: 'Keyboard', qty: 1, amount: 120}, {id: 2, desc: 'Mouse', qty: 1, amount: 50}, {id: 3, desc: 'Headset', qty: 1, amount: 80}]
-                },
-                {code: 'P105', name: 'Green Earbuds', category: 'Audio', quantity: 5, price: 49, items: [{id: 1, desc: 'Extra Tips', qty: 3, amount: 6}]},
-                {code: 'P106', name: 'USB Cable', category: 'Accessories', quantity: 150, price: 9, items: [{id: 1, desc: 'Velcro Tie', qty: 1, amount: 1}]}
-            ]);
-
-            const columns = ref([
-                {field: 'code', header: 'Code'},
-                {field: 'name', header: 'Name'},
-                {field: 'category', header: 'Category'},
-                {field: 'quantity', header: 'Quantity'},
-                {field: 'price', header: 'Price'}
-            ]);
-
-            const selectedProduct = ref(null);
-            const selectedProducts = ref([]);
-            const selectedProductEvent = ref(null);
-            const expandedRows = ref({});
-
-            const onRowSelect = (event) => {
-                try {
-                    const row = event?.data || selectedProductEvent?.value || null;
-                    if (!row) {
-                        alert('선택된 행이 없습니다.');
-                        return;
-                    }
-                    const msg = [
-                        `Code: ${row.code}`,
-                        `Name: ${row.name}`,
-                        `Category: ${row.category}`,
-                        `Quantity: ${row.quantity}`,
-                        `Price: ${row.price}`
-                    ].join('\n');
-                    alert(msg);
-                } catch (e) {
-                    alert('행 정보를 표시하는 중 오류가 발생했습니다.');
-                }
-            };
-
-            return {products, productsWithDetails, columns, selectedProduct, selectedProducts, selectedProductEvent, expandedRows, onRowSelect};
+      const productsWithDetails = ref([
+        {
+          code: 'P100',
+          name: 'Bamboo Watch',
+          category: 'Accessories',
+          quantity: 24,
+          price: 65,
+          items: [
+            {id: 1, desc: 'Strap', qty: 1, amount: 15},
+            {id: 2, desc: 'Gift Box', qty: 1, amount: 5}
+          ]
         },
-    });
-
-    /* ★★★ DataTable 내부 스크롤 영역에만 OS 적용하는 디렉티브 ★★★ */
-    app.directive('os-datatable', {
-        mounted(el, binding) {
-            const g = window.OverlayScrollbarsGlobal;
-            if (!g || !g.OverlayScrollbars) return;
-
-            const getOpts = () => {
-                const v = binding?.value || {};
-                return {scrollbars: {autoHide: v.autoHide ?? 'never'}};
-            };
-
-            const state = {observer: null, bodies: new Set(), options: getOpts()};
-
-            const apply = () => {
-                // PrimeVue v4/v5: .p-datatable-table-container 가 스크롤 컨테이너
-                const bodies = el.querySelectorAll('.p-datatable-table-container');
-                bodies.forEach((body) => {
-                    if (!body.__osInstance) {
-                        body.__osInstance = g.OverlayScrollbars(body, state.options);
-                        state.bodies.add(body);
-                    } else {
-                        try {
-                            body.__osInstance.options(state.options);
-                        } catch (_) {
-                        }
-                    }
-                });
-                // 제거된 컨테이너 정리
-                [...state.bodies].forEach((body) => {
-                    if (!el.contains(body)) {
-                        try {
-                            body.__osInstance?.destroy();
-                        } catch (_) {
-                        }
-                        state.bodies.delete(body);
-                    }
-                });
-            };
-
-            apply();
-            // DataTable 렌더/확장/스크롤영역 생성 변화 감지
-            const mo = new MutationObserver(() => apply());
-            mo.observe(el, {childList: true, subtree: true});
-            state.observer = mo;
-            el.__osDtState = state;
+        {
+          code: 'P101',
+          name: 'Black Watch',
+          category: 'Accessories',
+          quantity: 61,
+          price: 72,
+          items: [
+            {id: 1, desc: 'Warranty(2y)', qty: 1, amount: 0}
+          ]
         },
-        updated(el, binding) {
-            const state = el.__osDtState;
-            if (!state) return;
-            state.options = {scrollbars: {autoHide: (binding?.value?.autoHide ?? 'never')}};
-            // 옵션 갱신
-            state.bodies.forEach((body) => {
-                try {
-                    body.__osInstance?.options(state.options);
-                } catch (_) {
-                }
-            });
+        {
+          code: 'P102',
+          name: 'Blue Band',
+          category: 'Fitness',
+          quantity: 2,
+          price: 29,
+          items: [
+
+          ]
         },
-        unmounted(el) {
-            const state = el.__osDtState;
-            if (!state) return;
-            state.observer?.disconnect();
-            state.bodies.forEach((body) => {
-                try {
-                    body.__osInstance?.destroy();
-                } catch (_) {
-                }
-            });
-            el.__osDtState = null;
+        {
+          code: 'P103',
+          name: 'Game Controller',
+          category: 'Electronics',
+          quantity: 99,
+          price: 99,
+          items: [
+            {id: 1, desc: 'USB-C Cable', qty: 1, amount: 9},
+            {id: 2, desc: 'Carry Pouch', qty: 1, amount: 12}
+          ]
+        },
+        {
+          code: 'P104',
+          name: 'Gaming Set',
+          category: 'Electronics',
+          quantity: 63,
+          price: 299,
+          items: [
+            {id: 1, desc: 'Keyboard', qty: 1, amount: 120},
+            {id: 2, desc: 'Mouse', qty: 1, amount: 50},
+            {id: 3, desc: 'Headset', qty: 1, amount: 80}
+          ]
+        },
+        {
+          code: 'P105',
+          name: 'Green Earbuds',
+          category: 'Audio',
+          quantity: 5,
+          price: 49,
+          items: [
+            {id: 1, desc: 'Extra Tips', qty: 3, amount: 6}
+          ]
+        },
+        {
+          code: 'P106',
+          name: 'USB Cable',
+          category: 'Accessories',
+          quantity: 150,
+          price: 9,
+          items: [
+            {id: 1, desc: 'Velcro Tie', qty: 1, amount: 1}
+          ]
         }
-    });
+      ]);
 
-    // PrimeVue 설정
-    app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
-    const {Toolbar, Button, DataTable, Column} = PrimeVue;
+      const columns = ref([
+        {field: 'code', header: 'Code', width: '10rem'},
+        {field: 'name', header: 'Name', width: '14rem'},
+        {field: 'category', header: 'Category', width: '12rem'},
+        {field: 'quantity', header: 'Quantity', width: '10rem', align: 'right'},
+        {field: 'price', header: 'Price', width: '10rem', align: 'right'}
+      ]);
 
-    app.component('p-datatable', {
-        props: { scrollHeight: { type: String, default: '' } },
-        setup(props, { attrs, slots }) {
-            return () => withDirectives(
-                h(DataTable, {
-                    ...attrs,
-                    showGridlines: true,
-                    stripedRows: true,
-                    rowHover: true,
-                    scrollable: true,
-                    scrollHeight: props.scrollHeight
-                }, slots),
-                [[ app._context.directives['os-datatable'], { mode:'auto', autoHide:'never', axis:'both' } ]]
-            );
+      const selectedProduct = ref(null);
+      const selectedProducts = ref([]);
+      const selectedProductEvent = ref(null);
+      const expandedRows = ref({});
+
+      const onRowSelect = (event) => {
+        try {
+          const row = event?.data || selectedProductEvent?.value || null;
+          if (!row) {
+            alert('선택된 행이 없습니다.');
+            return;
+          }
+          const msg = [
+            `Code: ${row.code}`,
+            `Name: ${row.name}`,
+            `Category: ${row.category}`,
+            `Quantity: ${row.quantity}`,
+            `Price: ${row.price}`
+          ].join('\n');
+          alert(msg);
+        } catch (e) {
+          alert('행 정보를 표시하는 중 오류가 발생했습니다.');
         }
-    });
+      };
 
-    app.component('p-column', Column);
-    app.component('p-toolbar', Toolbar);
-    app.component('p-button', Button);
+      return {
+        products,
+        productsWithDetails,
+        columns,
+        selectedProduct,
+        selectedProducts,
+        selectedProductEvent,
+        expandedRows,
+        onRowSelect
+      };
+    },
+  });
 
-    // 페이지 전체 래퍼용 컴포넌트 (그대로 유지, autoHide만 'never'로)
-    app.component('overlay-scrollbars', {
-        props: ['style', 'class'],
-        mounted() {
-            // ★ 항상 보이기
-            window.OverlayScrollbarsGlobal.OverlayScrollbars(this.$el, {scrollbars: {autoHide: 'never'}});
-        },
-        render() {
-            return Vue.h('div', {style: this.style, class: this.$props.class}, this.$slots.default());
+  /* ★★★ DataTable 내부 스크롤 영역에만 OS 적용하는 디렉티브 ★★★ */
+  app.directive('os-datatable', {
+    mounted(el, binding) {
+      const g = window.OverlayScrollbarsGlobal;
+      if (!g || !g.OverlayScrollbars) return;
+
+      const getOpts = () => {
+        const v = binding?.value || {};
+        return {scrollbars: {autoHide: v.autoHide ?? 'never'}};
+      };
+
+      const state = {observer: null, bodies: new Set(), options: getOpts()};
+
+      const apply = () => {
+        // PrimeVue v4/v5: .p-datatable-table-container 가 스크롤 컨테이너
+        const bodies = el.querySelectorAll('.p-datatable-table-container');
+        bodies.forEach((body) => {
+          if (!body.__osInstance) {
+            body.__osInstance = g.OverlayScrollbars(body, state.options);
+            state.bodies.add(body);
+          } else {
+            try {
+              body.__osInstance.options(state.options);
+            } catch (_) {
+            }
+          }
+        });
+        // 제거된 컨테이너 정리
+        [...state.bodies].forEach((body) => {
+          if (!el.contains(body)) {
+            try {
+              body.__osInstance?.destroy();
+            } catch (_) {
+            }
+            state.bodies.delete(body);
+          }
+        });
+      };
+
+      apply();
+      // DataTable 렌더/확장/스크롤영역 생성 변화 감지
+      const mo = new MutationObserver(() => apply());
+      mo.observe(el, {childList: true, subtree: true});
+      state.observer = mo;
+      el.__osDtState = state;
+    },
+    updated(el, binding) {
+      const state = el.__osDtState;
+      if (!state) return;
+      state.options = {scrollbars: {autoHide: (binding?.value?.autoHide ?? 'never')}};
+      // 옵션 갱신
+      state.bodies.forEach((body) => {
+        try {
+          body.__osInstance?.options(state.options);
+        } catch (_) {
         }
-    });
+      });
+    },
+    unmounted(el) {
+      const state = el.__osDtState;
+      if (!state) return;
+      state.observer?.disconnect();
+      state.bodies.forEach((body) => {
+        try {
+          body.__osInstance?.destroy();
+        } catch (_) {
+        }
+      });
+      el.__osDtState = null;
+    }
+  });
 
-    app.mount('#app');
+  // PrimeVue 설정
+  app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
+  const {Toolbar, Button, DataTable, Column} = PrimeVue;
+
+  app.component('p-datatable', {
+    props: {scrollHeight: {type: String, default: ''}},
+    setup(props, {attrs, slots}) {
+      return () => withDirectives(
+        h(DataTable, {
+          showGridlines: true,
+          stripedRows: true,
+          rowHover: true,
+          scrollable: true,
+          removableSort: true,
+          resizableColumns: true,
+          columnResizeMode: 'expand',
+          scrollHeight: props.scrollHeight,
+          ...attrs
+        }, slots),
+        [[app._context.directives['os-datatable'], {mode: 'auto', autoHide: 'never', axis: 'both'}]]
+      );
+    }
+  });
+
+  app.component('p-column', Column);
+  app.component('p-toolbar', Toolbar);
+  app.component('p-button', Button);
+
+  // 페이지 전체 래퍼용 컴포넌트 (그대로 유지, autoHide만 'never'로)
+  app.component('overlay-scrollbars', {
+    props: ['style', 'class'],
+    mounted() {
+      // ★ 항상 보이기
+      window.OverlayScrollbarsGlobal.OverlayScrollbars(this.$el, {scrollbars: {autoHide: 'never'}});
+    },
+    render() {
+      return Vue.h('div', {style: this.style, class: this.$props.class}, this.$slots.default());
+    }
+  });
+
+  app.mount('#app');
 </script>
 </body>
 </html>
