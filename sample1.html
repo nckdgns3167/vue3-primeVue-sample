@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Vue3 + PrimeVue Form Sample</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link href="css/primeicons.css" rel="stylesheet">
+
+    <script src="js/vue.global.js"></script>
+    <script src="js/primevue.min.js"></script>
+    <script src="js/aura.js"></script>
+    <script src="js/tailwindcss.js"></script>
+    <script src="js/dayjs.min.js"></script>
+
+</head>
+<body class="bg-gray-100">
+
+<div id="app" class="p-6 max-w-4xl mx-auto space-y-8">
+    <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample (Form)</h1>
+
+    <!-- 정적 컴포넌트 배치 -->
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">InputText</h2>
+        <p-input-text
+                v-model="name"
+                placeholder="이름을 입력하세요"
+                class="w-full"
+        ></p-input-text>
+        <p class="text-sm text-gray-600">표시값: <code>{{ name }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ name }}</code></p>
+
+        <div class="mt-4">
+            <h3 class="text-sm font-medium mb-2">InputText + 돋보기 아이콘 (오른쪽, IconField 사용)</h3>
+            <p-icon-field icon-position="right" class="w-full" @click="onSearch">
+                <p-input-text
+                        v-model="searchText"
+                        class="w-full"
+                        readonly
+                ></p-input-text>
+                <p-input-icon class="pi pi-search cursor-pointer"></p-input-icon>
+            </p-icon-field>
+            <p class="text-xs text-gray-600 mt-1">표시값: <code>{{ searchText }}</code></p>
+            <p class="text-xs text-gray-600">실제 상태값: <code>{{ searchText }}</code></p>
+        </div>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">InputMask</h2>
+        <div class="space-y-3">
+            <div>
+                <label class="block text-sm mb-1">주민등록번호</label>
+                <p-input-mask
+                        v-model="mask.ssn"
+                        mask="999999-9999999"
+                        placeholder="######-#######"
+                        class="w-full"
+                ></p-input-mask>
+                <p class="text-xs text-gray-600">표시값: <code>{{ mask.ssn }}</code></p>
+                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.ssn }}</code></p>
+            </div>
+            <div>
+                <label class="block text-sm mb-1">사업자등록번호</label>
+                <p-input-mask
+                        v-model="mask.biz"
+                        mask="999-99-99999"
+                        placeholder="###-##-#####"
+                        class="w-full"
+                ></p-input-mask>
+                <p class="text-xs text-gray-600">표시값: <code>{{ mask.biz }}</code></p>
+                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.biz }}</code></p>
+            </div>
+            <div>
+                <label class="block text-sm mb-1">휴대폰번호</label>
+                <p-input-mask
+                        v-model="mask.mobile"
+                        :mask="mobileMask"
+                        placeholder="010-1234-5678"
+                        class="w-full"
+                ></p-input-mask>
+                <p class="text-xs text-gray-600">표시값: <code>{{ mask.mobile }}</code></p>
+                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.mobile }}</code></p>
+            </div>
+            <div>
+                <label class="block text-sm mb-1">전화번호(지역번호)</label>
+                <p-input-mask
+                        v-model="mask.tel"
+                        :mask="telMask"
+                        placeholder="02-123-4567 또는 031-123-4567"
+                        class="w-full"
+                ></p-input-mask>
+                <p class="text-xs text-gray-600">표시값: <code>{{ mask.tel }}</code></p>
+                <p class="text-xs text-gray-600">실제 상태값: <code>{{ mask.tel }}</code></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">InputNumber (오직 숫자만, 최솟/최댓값 있음)</h2>
+        <p-input-number
+                v-model="amount"
+                :min="0"
+                :max="100"
+                class="w-full"
+        ></p-input-number>
+        <p class="text-sm text-gray-600">표시값: <code>{{ amount }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ typeof amount === 'number' ? amount : Number(amount) }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">Textarea</h2>
+        <p-textarea
+                v-model="bio"
+                :auto-resize="true"
+                :rows="3"
+                placeholder="자기소개를 입력하세요"
+                class="w-full"
+        ></p-textarea>
+        <p class="text-sm text-gray-600">표시값: <code>{{ bio }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ bio }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">Password</h2>
+        <p-password
+                v-model="password"
+                :toggle-mask="true"
+                :feedback="false"
+                placeholder="비밀번호 입력"
+                class="w-full"
+        ></p-password>
+        <p class="text-sm text-gray-600">표시값: <code>{{ password }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ password }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">Select</h2>
+        <p-select
+                v-model="country"
+                :options="countryOptions"
+                option-label="label"
+                option-value="value"
+                placeholder="국가 선택"
+                show-clear
+                filter
+                class="w-full"
+        ></p-select>
+        <p class="text-sm text-gray-600">표시값: <code>{{ countryLabel }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ country }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">MultiSelect</h2>
+        <p-multi-select
+                v-model="cities"
+                :options="cityOptions"
+                option-label="label"
+                option-value="value"
+                display="chip"
+                placeholder="도시 선택"
+                show-clear
+                filter
+                class="w-full"
+        >
+        </p-multi-select>
+        <p class="text-sm text-gray-600">표시값: <code>{{ cityLabels }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(cities) }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">TreeSelect</h2>
+        <p-tree-select
+                v-model="treeValue"
+                :options="treeOptions"
+                placeholder="노드를 선택하세요"
+                show-clear
+                class="w-full"
+        ></p-tree-select>
+        <p class="text-sm text-gray-600">표시값: <code>{{ treeLabels }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ JSON.stringify(treeValue) }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">DatePicker</h2>
+        <p-date-picker
+                v-model="date"
+                date-format="yy-mm-dd"
+                :min-date="minDate"
+                :max-date="maxDate"
+                show-button-bar
+                show-icon
+                fluid
+                icon-display="input"
+                :manual-input="false"
+                class="w-full"
+        ></p-date-picker>
+        <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
+        <p class="text-sm text-gray-600">표시값: <code>{{ formattedDate }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateValue }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">DatePicker (Range)</h2>
+        <p-date-picker
+                v-model="dateRange"
+                selection-mode="range"
+                date-format="yy-mm-dd"
+                :min-date="minDate"
+                :max-date="maxDate"
+                show-button-bar
+                show-icon
+                fluid
+                icon-display="input"
+                :manual-input="false"
+                class="w-full"
+        ></p-date-picker>
+        <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
+        <p class="text-sm text-gray-600">표시값: <code>{{ formattedDateRange }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateRangeValue }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">Checkbox</h2>
+        <div class="flex items-center gap-2">
+            <p-checkbox
+                    v-model="agreements"
+                    input-id="agree1"
+                    value="agree"
+                    binary
+            ></p-checkbox>
+            <label class="cursor-default">약관에 동의합니다</label>
+        </div>
+        <p class="text-sm text-gray-600">표시값: <code>{{ agreements ? '동의' : '미동의' }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ agreements }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">RadioButton</h2>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <p-radio-button
+                        v-model="gender"
+                        value="M"
+                ></p-radio-button>
+                <span>남</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <p-radio-button
+                        v-model="gender"
+                        value="F"
+                ></p-radio-button>
+                <span>여</span>
+            </div>
+        </div>
+        <p class="text-sm text-gray-600">표시값: <code>{{ genderLabel }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ gender }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">ToggleButton</h2>
+        <p-toggle-button
+                v-model="subscribed"
+                on-label="ON"
+                off-label="OFF"
+        ></p-toggle-button>
+        <p class="text-sm text-gray-600">표시값: <code>{{ subscribed ? 'ON' : 'OFF' }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ subscribed }}</code></p>
+    </section>
+
+    <section class="bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-semibold mb-2">ToggleSwitch</h2>
+        <p-toggle-switch
+                v-model="notifyEnabled"
+                true-value="on"
+                false-value="off"
+        ></p-toggle-switch>
+        <p class="text-sm text-gray-600">표시값: <code>{{ notifyEnabled === 'on' ? 'ON' : 'OFF' }}</code></p>
+        <p class="text-sm text-gray-600">실제 상태값: <code>{{ notifyEnabled }}</code></p>
+    </section>
+
+</div>
+
+<script>
+    const {createApp, ref, computed, reactive} = Vue;
+
+    const app = createApp({
+        setup() {
+            // 개별 상태
+            const name = ref('');
+            const bio = ref('');
+            const password = ref('');
+            const country = ref(null);
+            const cities = ref([]);
+            const date = ref(null);
+            const dateRange = ref(null);
+            const agreements = ref(false); // binary 체크박스는 boolean
+            const gender = ref('M');
+            const amount = ref(1);
+            const subscribed = ref(true);
+            const notifyEnabled = ref('off');
+            const treeValue = ref(null);
+
+            // 검색 인풋 상태
+            const searchText = ref('');
+
+            // InputMask 상태
+            const mask = reactive({ ssn: '', biz: '', mobile: '', tel: '' });
+            // 마스크 패턴
+            const mobileMask = computed(() => '999-9999-9999');
+            const telMask = computed(() => (mask.tel && mask.tel.startsWith('02') ? '99-999-9999' : '999-999-9999'));
+
+            // DatePicker 경계값 (오늘 기준 -30일 ~ +30일)
+            const today = new Date();
+            const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 30);
+            const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
+
+            // 옵션 데이터
+            const countryOptions = [
+                {label: '한국', value: 'KR'},
+                {label: '미국', value: 'US'}
+            ];
+            const cityOptions = [
+                {label: '서울', value: 'SEL'},
+                {label: '부산', value: 'BSN'}
+            ];
+
+            // TreeSelect 옵션 (간단 샘플)
+            const treeOptions = [
+                {
+                    key: 'A',
+                    label: 'A 그룹',
+                    children: [
+                        { key: 'A-1', label: 'A-1 항목' },
+                        { key: 'A-2', label: 'A-2 항목' }
+                    ]
+                },
+                {
+                    key: 'B',
+                    label: 'B 그룹',
+                    children: [
+                        { key: 'B-1', label: 'B-1 항목' },
+                        { key: 'B-2', label: 'B-2 항목' }
+                    ]
+                }
+            ];
+
+            // 표시값 계산
+            const countryLabel = computed(() => {
+                const found = countryOptions.find(o => o.value === country.value);
+                return found ? found.label : '';
+            });
+            const cityLabels = computed(() => {
+                if (!Array.isArray(cities.value)) return '';
+                return cities.value
+                    .map(v => (cityOptions.find(o => o.value === v)?.label) || v)
+                    .join(', ');
+            });
+            const genderLabel = computed(() => (gender.value === 'M' ? '남' : gender.value === 'F' ? '여' : ''));
+            const treeLabels = computed(() => {
+                if (!treeValue.value) return '';
+                const keys = Array.isArray(treeValue.value) ? treeValue.value : [treeValue.value];
+                const findLabel = (nodes, key) => {
+                    for (const n of nodes) {
+                        if (n.key === key) return n.label;
+                        if (n.children) {
+                            const r = findLabel(n.children, key);
+                            if (r) return r;
+                        }
+                    }
+                    return key;
+                };
+                return keys.map(k => findLabel(treeOptions, k)).join(', ');
+            });
+            // dayjs 기반 날짜 표시값
+            // dayjs 안전 접근자 (UMD/various builds 대응)
+            const resolveDayjs = () => {
+                const g = window;
+                if (g && typeof g.dayjs === 'function') return g.dayjs;
+                if (g && g.dayjs && typeof g.dayjs.default === 'function') return g.dayjs.default;
+                return null;
+            };
+
+            // dayjs 기반 날짜 표시값 (fallback 포함)
+            const formattedDate = computed(() => {
+                if (!date.value) return '';
+                const dj = resolveDayjs();
+                if (dj) {
+                    const d = dj(date.value);
+                    return d.isValid() ? d.format('YYYY-MM-DD') : String(date.value);
+                }
+                // fallback: native Date
+                const nd = date.value instanceof Date ? date.value : new Date(date.value);
+                if (Number.isNaN(nd.getTime())) return String(date.value);
+                const yyyy = nd.getFullYear();
+                const mm = String(nd.getMonth() + 1).padStart(2, '0');
+                const dd = String(nd.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            });
+
+            // 실제 상태값(yyyymmdd) 표현용 계산값
+            const rawDateValue = computed(() => {
+                if (!date.value) return '';
+                const dj = resolveDayjs();
+                if (dj) {
+                    const d = dj(date.value);
+                    return d.isValid() ? d.format('YYYYMMDD') : '';
+                }
+                // fallback: native Date
+                const nd = date.value instanceof Date ? date.value : new Date(date.value);
+                if (Number.isNaN(nd.getTime())) return '';
+                const yyyy = nd.getFullYear();
+                const mm = String(nd.getMonth() + 1).padStart(2, '0');
+                const dd = String(nd.getDate()).padStart(2, '0');
+                return `${yyyy}${mm}${dd}`;
+            });
+
+            // Range 표시값 및 실제값 계산
+            const formattedDateRange = computed(() => {
+                const r = dateRange.value;
+                if (!Array.isArray(r) || r.length < 2 || !r[0] || !r[1]) return '';
+                const dj = resolveDayjs();
+                const fmt = (v) => {
+                    if (dj) {
+                        const d = dj(v);
+                        return d.isValid() ? d.format('YYYY-MM-DD') : '';
+                    }
+                    const nd = v instanceof Date ? v : new Date(v);
+                    if (Number.isNaN(nd.getTime())) return '';
+                    const yyyy = nd.getFullYear();
+                    const mm = String(nd.getMonth() + 1).padStart(2, '0');
+                    const dd = String(nd.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                };
+                const a = fmt(r[0]);
+                const b = fmt(r[1]);
+                return a && b ? `${a} ~ ${b}` : '';
+            });
+            const rawDateRangeValue = computed(() => {
+                const r = dateRange.value;
+                if (!Array.isArray(r) || r.length < 2 || !r[0] || !r[1]) return '';
+                const dj = resolveDayjs();
+                const fmt = (v) => {
+                    if (dj) {
+                        const d = dj(v);
+                        return d.isValid() ? d.format('YYYYMMDD') : '';
+                    }
+                    const nd = v instanceof Date ? v : new Date(v);
+                    if (Number.isNaN(nd.getTime())) return '';
+                    const yyyy = nd.getFullYear();
+                    const mm = String(nd.getMonth() + 1).padStart(2, '0');
+                    const dd = String(nd.getDate()).padStart(2, '0');
+                    return `${yyyy}${mm}${dd}`;
+                };
+                const a = fmt(r[0]);
+                const b = fmt(r[1]);
+                return a && b ? `${a},${b}` : '';
+            });
+
+            return {
+                // state
+                name, bio, password, country, cities, date, dateRange, agreements, gender, amount, subscribed,
+                countryOptions, cityOptions, treeOptions,
+                // 표시값 helpers
+                countryLabel, cityLabels, genderLabel, treeLabels, formattedDate, rawDateValue,
+                // range helpers
+                formattedDateRange, rawDateRangeValue,
+                // input mask
+                mask, mobileMask, telMask,
+                // datepicker bounds
+                minDate, maxDate,
+                // search input
+                searchText,
+                // toggle-switch & tree-select state
+                notifyEnabled, treeValue,
+                // helper to format bounds
+                formattedBound: (d) => {
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                },
+            };
+        },
+        methods: {
+            onSearch() {
+                // 데모용: 검색어를 콘솔에 출력
+                console.log('검색:', this.searchText);
+                alert(`검색: ${this.searchText || ''}`);
+            }
+        }
+    });
+
+    // PrimeVue 설정 및 컴포넌트 등록
+    app.use(PrimeVue.Config, {
+        theme: {
+            preset: PrimeUIX.Themes.Aura
+        },
+        // PrimeVue v4+/v5 expects locale keys at the root, not nested under date
+        locale: {
+            firstDayOfWeek: 0,
+            weekHeader: '주',
+            dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+            dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+            dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+            monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+            monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+            today: '오늘',
+            clear: '지우기'
+        }
+    });
+
+    const {InputText, Textarea, Password, Select, MultiSelect, DatePicker, Checkbox, RadioButton, InputNumber, ToggleButton, InputMask, IconField, InputIcon, ToggleSwitch, TreeSelect} = PrimeVue;
+
+    // p-* kebab-case aliases
+    app.component('p-input-text', InputText);
+    app.component('p-textarea', Textarea);
+    app.component('p-password', Password);
+    app.component('p-select', Select);
+    app.component('p-date-picker', DatePicker);
+    app.component('p-multi-select', MultiSelect);
+    app.component('p-checkbox', Checkbox);
+    app.component('p-radio-button', RadioButton);
+    app.component('p-input-number', InputNumber);
+    app.component('p-toggle-button', ToggleButton);
+    app.component('p-toggle-switch', ToggleSwitch);
+    app.component('p-tree-select', TreeSelect);
+    app.component('p-input-mask', InputMask);
+    app.component('p-icon-field', IconField);
+    app.component('p-input-icon', InputIcon);
+
+    app.mount('#app');
+</script>
+</body>
+</html>
