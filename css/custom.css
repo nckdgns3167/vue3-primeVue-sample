@@ -5,7 +5,7 @@
 .menu-tab-list .p-tablist-tab-list, .menu-tab-list .p-tablist-nav, .menu-tab-list .p-tablist { border: 0 !important; border-bottom: 0 !important; box-shadow: none !important; outline: 0 !important; background: transparent; margin-bottom: -0.4px !important; }
 
 /* Swiper 컨테이너 기본 레이아웃 */
-.menu-tab-list .tab-header { display: flex; align-items: center; gap: 9px; width: 100%; }
+.menu-tab-list .tab-header { display: flex; align-items: center; gap: 8.5px; width: 100%; }
 .menu-tab-list .tabs-swiper { width: 850px }
 .menu-tab-list .tabs-swiper .swiper-wrapper { min-height: 52px; }
 
@@ -31,7 +31,7 @@
 
 .tab-header-actions {
     display: flex;
-    gap: 8px;
+    gap: 8.5px;
 }
 
 .tab-header-body {
