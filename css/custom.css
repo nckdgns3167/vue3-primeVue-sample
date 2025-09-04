@@ -2,11 +2,11 @@
 .menu-tab-list { position: relative; }
 .menu-tab-list .p-tablist { position: relative; z-index: 2; }
 /* 탭바 경계선 제거 */
-.menu-tab-list .p-tablist-tab-list, .menu-tab-list .p-tablist-nav, .menu-tab-list .p-tablist { border: 0 !important; border-bottom: 0 !important; box-shadow: none !important; outline: 0 !important; background: transparent; }
+.menu-tab-list .p-tablist-tab-list, .menu-tab-list .p-tablist-nav, .menu-tab-list .p-tablist { border: 0 !important; border-bottom: 0 !important; box-shadow: none !important; outline: 0 !important; background: transparent; margin-bottom: -0.4px !important; }
 
 /* Swiper 컨테이너 기본 레이아웃 */
-.menu-tab-list .tab-header { display: flex; align-items: center; gap: .5rem; width: 100%; }
-.menu-tab-list .tabs-swiper { flex: 1 1 auto; position: relative; }
+.menu-tab-list .tab-header { display: flex; align-items: center; gap: 9px; width: 100%; }
+.menu-tab-list .tabs-swiper { width: 850px }
 .menu-tab-list .tabs-swiper .swiper-wrapper { min-height: 52px; }
 
 /* 좌/우 네비 버튼(옵션) */
@@ -14,7 +14,7 @@
 .menu-tab-list .tabs-nav-btn.swiper-button-disabled{ opacity: .4; pointer-events: none; }
 
 /* 탭 버튼 공통 */
-.menu-tab-list .p-tab{ padding: 6px 8px 4px !important; display: flex; align-items: center; gap: 6px; width: 142px; height: 52px; max-height: 52px; border: 1px solid #d5d5d5 !important; border-radius: 10px 10px 0 0; background: #fff; z-index: 2; border-bottom: 0 !important; background: var(--p-tabs-tab-hover-background); color: var(--p-tabs-tab-hover-color); }
+.menu-tab-list .p-tab{ padding: 6px 8px 4px !important; display: flex; align-items: center; gap: 6px; width: 166px; height: 52px; max-height: 52px; border: 1px solid #d5d5d5 !important; border-radius: 10px 10px 0 0; background: #fff; z-index: 2; border-bottom: 0 !important; background: var(--p-tabs-tab-hover-background); color: var(--p-tabs-tab-hover-color); }
 .menu-tab-list .p-tab .tab-text{ flex: 1 1 auto; min-width: 0; font-size: .944rem; font-weight: 500; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
 .menu-tab-list .p-tab .tab-close{ flex: 0 0 24px; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; background: transparent; border: 0; cursor: pointer; }
 .menu-tab-list .p-tab .tab-close:hover{ background: var(--p-surface-100, #f3f4f6); color: #111827; }
@@ -28,3 +28,44 @@
 .menu-tab-list .p-tablist .p-tablist-active-bar, .menu-tab-list .p-tablist .p-tablist-active-indicator, .menu-tab-list .p-tabs .p-tablist-active-bar, .menu-tab-list .p-tabs .p-tablist-active-indicator{ display: none !important; }
 /* 일부 프리셋은 ::after로 언더라인을 그림 → 함께 제거 */
 .menu-tab-list .p-tab::after, .menu-tab-list .p-tab.p-tab-active::after, .menu-tab-list .p-tab[aria-selected="true"]::after{ content: none !important; }
+
+.tab-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.tab-header-body {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.tab-header-action-btn {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    gap: 0;
+    display: inline-flex;
+    cursor: pointer;
+    user-select: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    padding: 0.5rem 0.7rem;
+    font-size: 1rem;
+    font-family: inherit;
+    font-feature-settings: inherit;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, outline-color 0.2s, box-shadow 0.2s;
+    outline-color: transparent;
+}
+
+.tab-header-action-btn i {
+    font-size: 1rem;
+}
