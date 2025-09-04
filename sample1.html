@@ -5,6 +5,39 @@
     <title>Vue3 + PrimeVue Sample</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+    <script>
+        (function () {
+            // 숨길 메시지 패턴(부분 일치)
+            const dropPhrases = [
+                'You are running a development build of Vue',
+                'The browser build of Tailwind CSS should not be used in production'
+            ];
+
+            const keep = {
+                log: console.log.bind(console),
+                info: console.info.bind(console),
+                warn: console.warn.bind(console),
+                error: console.error.bind(console),
+                debug: console.debug.bind(console),
+            };
+
+            const shouldDrop = (args) => {
+                try {
+                    const text = args.map(a => String(a)).join(' ');
+                    return dropPhrases.some(p => text.includes(p));
+                } catch (_) {
+                    return false;
+                }
+            };
+
+            console.info = (...args) => { if (!shouldDrop(args)) keep.info(...args); };
+            console.warn = (...args) => { if (!shouldDrop(args)) keep.warn(...args); };
+            // 필요시 아래도 활성화
+            // console.log  = (...args) => { if (!shouldDrop(args)) keep.log(...args); };
+            // console.debug= (...args) => { if (!shouldDrop(args)) keep.debug(...args); };
+        })();
+    </script>
+
     <link href="css/primeicons.css" rel="stylesheet"/>
     <link href="/css/swiper-bundle.min.css" rel="stylesheet"/>
     <link href="css/custom.css" rel="stylesheet"/>
@@ -417,6 +450,7 @@
             const formattedDate = computed(() => {
                 if (!date.value) return '';
                 const dj = resolveDayjs();
+                console.log('formattedDate: dj', dj);
                 if (dj) {
                     const d = dj(date.value);
                     return d.isValid() ? d.format('YYYY-MM-DD') : String(date.value);
