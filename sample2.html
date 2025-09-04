@@ -22,7 +22,7 @@
 <body class="bg-gray-100">
 <div id="app">
     <overlay-scrollbars style="max-height: 100vh;">
-        <div class="max-w-4xl mx-auto p-6 space-y-6">
+        <div >
             <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Tabs, Swiper)</span></h1>
 
             <p-toolbar class="justify-between">
@@ -53,43 +53,47 @@
                 </template>
             </p-toolbar>
 
-            <section class="bg-white p-4 rounded shadow">
+            <section class="bg-white rounded shadow" style="padding: 15px">
                 <p-tabs class="menu-tab-list" v-model:value="selected">
                     <!-- 탭바 (p-tab-list 자체에 ref를 달아 $el로 DOM 접근) -->
                     <p-tab-list ref="tabListComp">
                         <div class="tab-header">
-                            <button ref="prevBtnRef" type="button" class="tabs-nav-btn tabs-prev" aria-label="이전">
-                                <i class="pi pi-chevron-left"></i>
-                            </button>
-
-                            <swiper
-                                    class="tabs-swiper"
-                                    :options="swiperOptions"
-                                    @ready="onSwiperReady"
-                            >
-                                <template #default>
-                                    <swiper-slide v-for="(t,i) in tabs" :key="t.key" class="tab-slide">
-                                        <div class="tab-item-wrap">
-                                            <!-- PassThrough(:pt)로 data-index를 부여 (필요 시 유지) -->
-                                            <p-tab :value="i" :pt="getTabPT(i)">
-                                                <span class="tab-text">{{ t.label }}</span>
-                                                <button
-                                                        type="button"
-                                                        class="tab-close"
-                                                        aria-label="닫기"
-                                                        @click.stop="console && console.log('close click', t.key)"
-                                                >
-                                                    <i class="pi pi-times"></i>
-                                                </button>
-                                            </p-tab>
-                                        </div>
-                                    </swiper-slide>
-                                </template>
-                            </swiper>
-
-                            <button ref="nextBtnRef" type="button" class="tabs-nav-btn tabs-next" aria-label="다음">
-                                <i class="pi pi-chevron-right"></i>
-                            </button>
+                            <div class="tab-header-actions">
+                                <button class="tab-header-action-btn" type="button" aria-label="메뉴">
+                                    <i class="pi pi-bars text-gray-700"></i>
+                                </button>
+                                <button class="tab-header-action-btn" type="button" aria-label="홈">
+                                    <i class="pi pi-home text-gray-700"></i>
+                                </button>
+                            </div>
+                            <div class="tab-header-body">
+                                <button ref="prevBtnRef" type="button" class="tabs-nav-btn tabs-prev" aria-label="이전">
+                                    <i class="pi pi-chevron-left"></i>
+                                </button>
+                                <swiper class="tabs-swiper" :options="swiperOptions" @ready="onSwiperReady">
+                                    <template #default>
+                                        <swiper-slide v-for="(t,i) in tabs" :key="t.key" class="tab-slide">
+                                            <div class="tab-item-wrap">
+                                                <!-- PassThrough(:pt)로 data-index를 부여 (필요 시 유지) -->
+                                                <p-tab :value="i" :pt="getTabPT(i)">
+                                                    <span class="tab-text">{{ t.label }}</span>
+                                                    <button
+                                                            type="button"
+                                                            class="tab-close"
+                                                            aria-label="닫기"
+                                                            @click.stop="console && console.log('close click', t.key)"
+                                                    >
+                                                        <i class="pi pi-times"></i>
+                                                    </button>
+                                                </p-tab>
+                                            </div>
+                                        </swiper-slide>
+                                    </template>
+                                </swiper>
+                                <button ref="nextBtnRef" type="button" class="tabs-nav-btn tabs-next" aria-label="다음">
+                                    <i class="pi pi-chevron-right"></i>
+                                </button>
+                            </div>
                         </div>
                     </p-tab-list>
 
@@ -159,7 +163,6 @@
 
             // p-tab-list 컴포넌트 ref → DOM은 $el
             const tabListComp = ref(null);
-            const tabListEl = computed(() => tabListComp.value ? tabListComp.value.$el : null);
 
             // Swiper 및 네비 버튼 refs
             const swiperWrapperEl = ref(null);
@@ -186,20 +189,7 @@
             // Swiper ready 콜백 (인스턴스만 보관, 추가 로직 없음)
             const onSwiperReady = ({wrapperEl, instance}) => {
                 swiperWrapperEl.value = wrapperEl;
-                // instance를 써야 한다면 여기서 사용; 현재 seam 관련 로직 제거로 별도 사용 없음.
             };
-
-            // 선택 변경 반응 (seam 관련 로직 제거로 별도 동작 없음)
-            watch(selected, async () => {
-                await nextTick();
-                // no-op
-            });
-
-            // 마운트/언마운트 훅 (seam 관련 리스너 제거로 현재 특별한 작업 없음)
-            onMounted(() => {
-            });
-            onBeforeUnmount(() => {
-            });
 
             return {
                 tabs, selected,
