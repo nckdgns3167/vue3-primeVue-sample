@@ -23,7 +23,11 @@
 .menu-tab-list .p-tab[aria-selected="true"], .menu-tab-list .p-tab.p-tab-active, .menu-tab-list .p-tab.p-highlight{ border-color: #3864e3 !important; color: #3864e3; box-shadow: 2px 0 2px rgba(0,0,0,.12); background: #fff !important; }
 
 /* 패널 카드 스타일 */
-.menu-tab-list .p-tabpanels{ position: relative; z-index: 1; background: #fff; border: 1px solid #D5D5D5; border-top: none; border-radius: 5px 5px 10px 10px; box-shadow: 0 0 2px 0.5px rgba(0, 0, 0, .07); height: 1480px; padding: 20px; padding-bottom: 50px; }
+.menu-tab-list .p-tabpanels{ position: relative; z-index: 1; background: #fff; border: 1px solid #D5D5D5; border-top: none; border-radius: 5px 5px 10px 10px; box-shadow: 0 0 2px 0.5px rgba(0, 0, 0, .07); padding: 0; }
+.menu-tab-list .p-tabpanel{
+    padding: 20px 20px 50px 20px;
+    position: relative;
+}
 /* 테마가 주는 활성 인디케이터(언더라인/바) 숨김 */
 .menu-tab-list .p-tablist .p-tablist-active-bar, .menu-tab-list .p-tablist .p-tablist-active-indicator, .menu-tab-list .p-tabs .p-tablist-active-bar, .menu-tab-list .p-tabs .p-tablist-active-indicator{ display: none !important; }
 /* 일부 프리셋은 ::after로 언더라인을 그림 → 함께 제거 */
@@ -42,4 +46,53 @@
     align-items: center;
     position: relative;
     width: 100%;
+}
+
+/* ───────── 애니메이션: 새 탭 버튼 등장 (방법 A) ───────── */
+@keyframes tabFadeIn {
+  0%   { opacity: 0; transform: translateY(6px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0)   scale(1); }
+}
+/* 성능 최적화용 힌트 */
+.menu-tab-list .swiper-slide .tab-item-wrap {
+  will-change: transform, opacity;
+}
+/* 새로 DOM에 추가된 슬라이드(첫 번째)에만 등장 애니메이션 적용 */
+/* is-prepending 동안 첫 번째 슬라이드 컨텐츠만 페이드/슬라이드-인 */
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:first-child .tab-item-wrap {
+  animation: tabFadeIn .22s cubic-bezier(.2,.8,.2,1) both;
+}
+
+/* ───────── 기존 탭들: 오른쪽으로 밀리는 느낌 ───────── */
+@keyframes tabsPushRight {
+  0%   { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+/* 새 탭이 prepend되는 순간(wrapper에 is-prepending이 붙은 짧은 시간) */
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending
+  .swiper-slide:not(:first-child) .tab-item-wrap {
+  animation: tabsPushRight .22s cubic-bezier(.2,.8,.2,1) both;
+}
+/* 선택: 가벼운 스태거 예시 (필요 시 주석 해제) */
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(3) .tab-item-wrap { animation-delay: .01s; }
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(4) .tab-item-wrap { animation-delay: .02s; }
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(5) .tab-item-wrap { animation-delay: .03s; }
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(6) .tab-item-wrap { animation-delay: .04s; }
+
+/* ───────── 탭 제거(닫기) 애니메이션 ───────── */
+@keyframes tabLeaveOut {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(6px) scale(0.98); }
+}
+@keyframes tabPanelLeaveOut {
+  0%   { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+/* 탭 버튼(슬라이드 내부)의 퇴장 */
+.menu-tab-list .swiper-slide .tab-item-wrap.is-leaving {
+  animation: tabLeaveOut .22s cubic-bezier(.2,.8,.2,1) both;
+}
+/* 탭 패널의 퇴장 (선택사항: 미묘하게) */
+.menu-tab-list .p-tabpanels .p-tabpanel.is-leaving {
+  animation: tabPanelLeaveOut .18s ease-out both;
 }
