@@ -25,7 +25,7 @@
 .menu-tab-list .p-tab.tab-is-loading.p-tab-active,
 .menu-tab-list .p-tab.tab-is-loading.p-highlight { --skel-base: #93acf4; --skel-mid: #3864e3; }
 /* 고스트 보더(반짝이)는 ::after에 그림 */
-.menu-tab-list .p-tab.tab-is-loading::after { content: "" !important; position: absolute; inset: 0; border-radius: 9px 9px 0 0; background: linear-gradient(100deg, var(--skel-base) 20%, var(--skel-mid) 40%, var(--skel-base) 60%); background-size: 200% 100%; animation: tabs-skeleton-shimmer 2s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 0; pointer-events: none; padding: 2px 2px 0 2px; }
+.menu-tab-list .p-tab.tab-is-loading::after { content: "" !important; position: absolute; inset: 0; border-radius: 9px 9px 0 0; background: linear-gradient(100deg, var(--skel-base) 20%, var(--skel-mid) 40%, var(--skel-base) 60%); background-size: 200% 100%; animation: tabs-skeleton-shimmer 2s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 0; pointer-events: none; padding: 1px 1px 0 1px; }
 /* 내용은 위로 올림 */
 .menu-tab-list .p-tab.tab-is-loading > * { position: relative; z-index: 1; }
 @keyframes tabs-skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
@@ -69,3 +69,59 @@
 .loading-overlay::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%); transform: translateX(-100%); will-change: transform, opacity; animation: pv-shimmer 2s ease-in-out infinite; mix-blend-mode: screen; pointer-events: none; }
 @keyframes pv-shimmer { 0% { transform: translateX(-100%); } 60% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .loading-overlay::before { animation-duration: 3s; opacity: 0.5; } }
+
+/* ───────────────── Bootstrap 5 느낌의 PrimeVue Accordion 스킨 (PrimeVue 4 DOM 매칭) ───────────────── */
+/* 사용법: <p-accordion class="acc-b5"> … </p-accordion> */
+
+.acc-b5.p-accordion[data-pc-name="accordion"] { background: transparent; border: 0; }
+
+/* 각 패널(아이템) */
+.acc-b5.p-accordion [data-pc-name="accordionpanel"] {
+  border: 1px solid #dee2e6;                /* B5 경계 */
+  border-radius: .375rem;                    /* 둥근 모서리 */
+  overflow: hidden;                          /* 내부 둥근 모서리 유지 */
+  background: #fff;
+}
+
+/* 헤더(닫힘 기본) */
+.acc-b5.p-accordion [data-pc-name="accordionheader"] {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .95rem 1.25rem;
+  background: #fff; color: #212529; cursor: pointer; border: 0;
+  text-align: left;
+}
+/* 헤더 hover */
+.acc-b5.p-accordion [data-pc-name="accordionheader"]:hover { background: #f8f9fa; }
+/* 포커스 링 */
+.acc-b5.p-accordion [data-pc-name="accordionheader"]:focus-visible {
+  outline: 0; box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+/* 헤더 열린 상태 */
+.acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] {
+  background: #e7f1ff !important;
+  color: #0c63e4 !important;
+}
+
+/* 기본 PrimeVue 토글 아이콘 숨김 (우리는 커스텀 아이콘 사용) */
+.acc-b5.p-accordion [data-pc-name="accordionheader"] .p-accordionheader-toggleicon,
+.acc-b5.p-accordion [data-pc-name="accordionheader"] .p-accordionheader-toggle-icon,
+.acc-b5.p-accordion [data-pc-name="accordionheader"] [data-pc-section="toggleicon"] {
+  display: none !important;
+}
+
+/* 커스텀 아이콘 회전: header의 aria-expanded 상태 사용 */
+.acc-b5.p-accordion [data-pc-name="accordionheader"] .accb5-toggle { transition: transform .2s ease; }
+.acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] .accb5-toggle { transform: rotate(180deg); }
+
+/* 본문(컨텐츠) */
+.acc-b5.p-accordion [data-pc-name="accordioncontent"] {
+  background: #fff; color: #212529;
+  border-top: 1px solid #dee2e6;             /* 헤더와 본문 사이 분할선 */
+}
+
+/* Disabled */
+.acc-b5.p-accordion [data-pc-name="accordionpanel"][data-p-disabled="true"],
+.acc-b5.p-accordion [data-pc-name="accordionheader"][data-p-disabled="true"] {
+  opacity: .55; cursor: not-allowed;
+}

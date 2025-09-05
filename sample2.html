@@ -22,7 +22,7 @@
 <body class="bg-gray-100">
 <div id="app">
     <overlay-scrollbars style="max-height: 100vh;">
-        <div class="mx-auto py-6 space-y-6" style="max-width: 1035px;">
+        <div class="mx-auto py-6 space-y-6" style="max-width: 1035px; min-width: 1035px;">
             <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Tabs, Swiper, Drawer)</span></h1>
 
             <p-toolbar class="justify-between">
@@ -34,6 +34,9 @@
                         <a href="sample2.html">
                             <p-button label="Tabs/Swiper/Drawer" size="small" outlined/>
                         </a>
+                        <a href="sample8.html">
+                            <p-button label="Accordian" size="small" outlined/>
+                        </a>
                         <a href="sample3.html">
                             <p-button label="DataTable" size="small" outlined/>
                         </a>
@@ -41,7 +44,7 @@
                             <p-button label="Tree/PickList" size="small" outlined/>
                         </a>
                         <a href="sample5.html">
-                            <p-button label="Button/Speed Dial" size="small" outlined/>
+                            <p-button label="Button" size="small" outlined/>
                         </a>
                         <a href="sample6.html">
                             <p-button label="Tag/Spinner/Toast" size="small" outlined/>
@@ -61,7 +64,7 @@
                           }">
                     <overlay-scrollbars style="max-height: 100%; height: 100%">
                         <div style="padding: 12px">
-                            <p class="text-sm text-gray-600 mb-2">원하는 메뉴를 선택하면 탭이 생성됩니다.</p>
+                            <p class="text-sm text-gray-600 mb-2">디자인 원래대로 갈겁니다</p>
                             <ul class="space-y-1">
                                 <li v-for="m in menuItems" :key="m.key">
                                     <button type="button" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100 flex items-center gap-2"
