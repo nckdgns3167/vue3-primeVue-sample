@@ -69,20 +69,16 @@
 .loading-overlay::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%); transform: translateX(-100%); will-change: transform, opacity; animation: pv-shimmer 2s ease-in-out infinite; mix-blend-mode: screen; pointer-events: none; }
 @keyframes pv-shimmer { 0% { transform: translateX(-100%); } 60% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .loading-overlay::before { animation-duration: 3s; opacity: 0.5; } }
-
 /* ───────────────── Bootstrap 5 느낌의 PrimeVue Accordion 스킨 (PrimeVue 4 DOM 매칭) ───────────────── */
 /* 사용법: <p-accordion class="acc-b5"> … </p-accordion> */
-
 .acc-b5.p-accordion[data-pc-name="accordion"] { background: transparent; border: 0; }
-
 /* 각 패널(아이템) */
 .acc-b5.p-accordion [data-pc-name="accordionpanel"] {
-  border: 1px solid #dee2e6;                /* B5 경계 */
-  border-radius: .375rem;                    /* 둥근 모서리 */
-  overflow: hidden;                          /* 내부 둥근 모서리 유지 */
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  overflow: hidden;
   background: #fff;
 }
-
 /* 헤더(닫힘 기본) */
 .acc-b5.p-accordion [data-pc-name="accordionheader"] {
   display: flex; align-items: center; gap: .5rem;
@@ -93,42 +89,30 @@
 /* 헤더 hover */
 .acc-b5.p-accordion [data-pc-name="accordionheader"]:hover { background: #f8f9fa; }
 /* 포커스 링 */
-.acc-b5.p-accordion [data-pc-name="accordionheader"]:focus-visible {
-  outline: 0; box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
-}
-
+.acc-b5.p-accordion [data-pc-name="accordionheader"]:focus-visible { outline: 0; box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); }
 /* 헤더 열린 상태 */
-.acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] {
-  background: #e7f1ff !important;
-  color: #0c63e4 !important;
-}
-
+.acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] { background: #e7f1ff !important; color: #0c63e4 !important; }
 /* 기본 PrimeVue 토글 아이콘 숨김 (우리는 커스텀 아이콘 사용) */
 .acc-b5.p-accordion [data-pc-name="accordionheader"] .p-accordionheader-toggleicon,
 .acc-b5.p-accordion [data-pc-name="accordionheader"] .p-accordionheader-toggle-icon,
 .acc-b5.p-accordion [data-pc-name="accordionheader"] [data-pc-section="toggleicon"] {
   display: none !important;
 }
-
 /* 커스텀 아이콘 회전: header의 aria-expanded 상태 사용 */
 .acc-b5.p-accordion [data-pc-name="accordionheader"] .accb5-toggle { transition: transform .2s ease; }
 .acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] .accb5-toggle { transform: rotate(180deg); }
-
 /* 본문(컨텐츠) */
 .acc-b5.p-accordion [data-pc-name="accordioncontent"] {
   background: #fff; color: #212529;
   border-top: 1px solid #dee2e6;             /* 헤더와 본문 사이 분할선 */
 }
-
 /* Disabled */
 .acc-b5.p-accordion [data-pc-name="accordionpanel"][data-p-disabled="true"],
 .acc-b5.p-accordion [data-pc-name="accordionheader"][data-p-disabled="true"] {
   opacity: .55; cursor: not-allowed;
 }
-
 /* ───────────────── DataTable Row Expansion 토글 아이콘 회전 (정확 매칭: .p-datatable-row-toggle-button) ───────────────── */
 /* 스코프: .dt-exp-anim */
-
 /* 버튼 기본 레이아웃 */
 .dt-exp-anim .p-datatable-row-toggle-button {
   position: relative; /* ::after 배치용 */
@@ -136,13 +120,11 @@
   width: 1.75rem; height: 1.75rem; /* 필요 시 조정 */
   color: inherit; /* 아이콘 색 = 현재 글자색 */
 }
-
 /* PrimeVue 기본 토글 아이콘 숨김 */
 .dt-exp-anim .p-datatable-row-toggle-button .p-datatable-row-toggle-icon,
 .dt-exp-anim .p-datatable-row-toggle-button [data-pc-section="rowtogglericon"] {
   display: none !important;
 }
-
 /* 커스텀 아이콘(chevron-down)을 ::after로 그림 + 애니메이션 */
 .dt-exp-anim .p-datatable-row-toggle-button::after {
   content: "";
@@ -154,18 +136,9 @@
   transition: transform .2s ease; /* 부드러운 회전 */
   transform-origin: center;
 }
-
 /* 열림 상태에서 180도 회전 */
-.dt-exp-anim .p-datatable-row-toggle-button[aria-expanded="true"]::after {
-  transform: rotate(180deg);
-}
-
+.dt-exp-anim .p-datatable-row-toggle-button[aria-expanded="true"]::after { transform: rotate(180deg); }
 /* 접근성: 키보드 포커스 링(옵션) */
-.dt-exp-anim .p-datatable-row-toggle-button:focus-visible {
-  outline: 0;
-  box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
-  border-radius: .25rem;
-}
-
+.dt-exp-anim .p-datatable-row-toggle-button:focus-visible { outline: 0; box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); border-radius: .25rem; }
 /* td 전체가 클릭 가능함을 시각적으로 암시 */
 .dt-exp-wide td.expander-cell { cursor: pointer; }
