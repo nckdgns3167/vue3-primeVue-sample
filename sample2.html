@@ -22,8 +22,8 @@
 <body class="bg-gray-100">
 <div id="app">
     <overlay-scrollbars style="max-height: 100vh;">
-        <div >
-            <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Tabs, Swiper)</span></h1>
+        <div class="mx-auto p-6 space-y-6" style="max-width: 1035px;">
+            <h1 class="text-2xl font-bold text-center">Vue3 + PrimeVue Sample <span class="text-cyan-600">(Tabs, Swiper, Drawer)</span></h1>
 
             <p-toolbar class="justify-between">
                 <template #center>
@@ -32,7 +32,7 @@
                             <p-button label="Form" size="small" outlined/>
                         </a>
                         <a href="sample2.html">
-                            <p-button label="Tabs/Swiper" size="small" outlined/>
+                            <p-button label="Tabs/Swiper/Drawer" size="small" outlined/>
                         </a>
                         <a href="sample3.html">
                             <p-button label="DataTable" size="small" outlined/>
@@ -41,7 +41,7 @@
                             <p-button label="Tree/PickList" size="small" outlined/>
                         </a>
                         <a href="sample5.html">
-                            <p-button label="Buttons" size="small" outlined/>
+                            <p-button label="Button/Speed Dial" size="small" outlined/>
                         </a>
                         <a href="sample6.html">
                             <p-button label="Tag/Spinner/Toast" size="small" outlined/>
@@ -59,12 +59,8 @@
                     <p-tab-list ref="tabListComp">
                         <div class="tab-header">
                             <div class="tab-header-actions">
-                                <button class="tab-header-action-btn" type="button" aria-label="메뉴">
-                                    <i class="pi pi-bars text-gray-700"></i>
-                                </button>
-                                <button class="tab-header-action-btn" type="button" aria-label="홈">
-                                    <i class="pi pi-home text-gray-700"></i>
-                                </button>
+                                <p-button icon="pi pi-bars" severity="secondary" variant="text" size="small" raised rounded aria-label="전체메뉴" @click=""></p-button>
+                                <p-button icon="pi pi-home" severity="secondary" variant="text" size="small" raised rounded aria-label="홈" as="a" href="http://localhost:63342/vue3-primeVue-sample/sample2.html"></p-button>
                             </div>
                             <div class="tab-header-body">
                                 <button ref="prevBtnRef" type="button" class="tabs-nav-btn tabs-prev" aria-label="이전">
