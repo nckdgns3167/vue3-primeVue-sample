@@ -91,7 +91,7 @@
                                         <swiper-slide v-for="(t,i) in tabs" :key="t.key" class="tab-slide">
                                             <div class="tab-item-wrap">
                                                 <!-- PassThrough(:pt)로 data-index를 부여 (필요 시 유지) -->
-                                                <p-tab :value="i" :pt="getTabPT(i)">
+                                                <p-tab :value="i" :class="{ 'tab-is-loading': isLoading(t.key) }" :pt="getTabPT(i)">
                                                     <span class="tab-text">{{ t.label }}</span>
                                                     <button
                                                             type="button"
@@ -122,10 +122,12 @@
                             <div v-if="isLoading(t.key)">
                                 로딩 중... (약 {{ remainingSeconds(t.key) }}초 후 완료)
                             </div>
-                            <div v-if="isLoading(t.key)" class="absolute inset-0 flex items-center justify-center bg-black/10" style="border-radius: 5px 5px 10px 10px;">
-                                <div class="flex items-center">
-                                    <p-progress-spinner style="width:40px;height:40px" stroke-width="8" fill="transparent" animationDuration=".5s" aria-label="loading"/>
-                                </div>
+                            <div
+                                v-if="isLoading(t.key)"
+                                class="loading-overlay loading-overlay--dim flex items-center justify-center"
+                                style="border-radius: 5px 5px 10px 10px;"
+                            >
+                                <p-progress-spinner style="width:40px;height:40px" stroke-width="8" fill="transparent" animationDuration=".5s" aria-label="loading"/>
                             </div>
                         </p-tab-panel>
                     </p-tab-panels>
@@ -250,10 +252,16 @@
                 }
             };
 
-            // PT 헬퍼: 각 탭 루트/액션에 data-index를 부여
+            // PT 헬퍼: 각 탭 루트에 data-index/aria-busy 부여 (클래스는 p-tab에 직접 바인딩)
             const getTabPT = (i) => ({
-                root: {'data-index': i},
-                action: {'data-index': i}
+                root: () => {
+                    const key = tabs.value?.[i]?.key;
+                    const loading = key ? isLoading(key) : false;
+                    return {
+                        'data-index': i,
+                        'aria-busy': loading ? 'true' : 'false'
+                    };
+                }
             });
 
             // Swiper ready 콜백 (인스턴스 저장)
@@ -387,6 +395,14 @@
                 const prevInt = intervalsByKey.get(key);
                 if (prevInt) clearInterval(prevInt);
                 intervalsByKey.delete(key);
+
+                // 제거된 탭의 로딩 상태/완료 플래그 초기화 → 재생성 시 다시 로딩 표시
+                const { [key]: _l, ...restLoading } = loadingByKey.value || {};
+                loadingByKey.value = restLoading;
+                const { [key]: _lo, ...restLoaded } = loadedOnceByKey.value || {};
+                loadedOnceByKey.value = restLoaded;
+                const { [key]: _rm, ...restRemain } = remainingMsByKey.value || {};
+                remainingMsByKey.value = restRemain;
 
                 // 데이터에서 제거
                 const newTabs = tabs.value.slice();

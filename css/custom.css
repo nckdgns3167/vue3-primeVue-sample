@@ -2,97 +2,70 @@
 .menu-tab-list { position: relative; }
 .menu-tab-list .p-tablist { position: relative; z-index: 2; }
 /* 탭바 경계선 제거 */
-.menu-tab-list .p-tablist-tab-list, .menu-tab-list .p-tablist-nav, .menu-tab-list .p-tablist { border: 0 !important; border-bottom: 0 !important; box-shadow: none !important; outline: 0 !important; background: transparent; margin-bottom: -0.6px !important; }
-
+.menu-tab-list .p-tablist-tab-list, .menu-tab-list .p-tablist-nav, .menu-tab-list .p-tablist { border: 0 !important; border-bottom: 0 !important; box-shadow: none !important; outline: 0 !important; background: transparent; }
 /* Swiper 컨테이너 기본 레이아웃 */
 .menu-tab-list .tab-header { display: flex; align-items: center; width: 100%; }
-.menu-tab-list .tabs-swiper { width: 850px }
+.menu-tab-list .tabs-swiper { width: 850px; }
 .menu-tab-list .tabs-swiper .swiper-wrapper { min-height: 52px; }
-
 /* 좌/우 네비 버튼(옵션) */
 .menu-tab-list .tabs-nav-btn{ width: 34px; height: 34px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; transition: opacity .12s, background .12s; }
 .menu-tab-list .tabs-nav-btn.swiper-button-disabled{ opacity: .4; pointer-events: none; }
-
 /* 탭 버튼 공통 */
 .menu-tab-list .p-tab{ padding: 6px 8px 4px !important; display: flex; align-items: center; gap: 6px; width: 166px; height: 52px; max-height: 52px; border: 1px solid #d5d5d5 !important; border-radius: 10px 10px 0 0; background: #fff; z-index: 2; border-bottom: 0 !important; background: var(--p-tabs-tab-hover-background); color: var(--p-tabs-tab-hover-color); }
 .menu-tab-list .p-tab .tab-text{ flex: 1 1 auto; min-width: 0; font-size: .944rem; font-weight: 500; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
 .menu-tab-list .p-tab .tab-close{ flex: 0 0 24px; width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; background: transparent; border: 0; cursor: pointer; }
 .menu-tab-list .p-tab .tab-close:hover{ background: var(--p-surface-100, #f3f4f6); color: #111827; }
-
 /* 활성 탭 강조 */
-.menu-tab-list .p-tab[aria-selected="true"], .menu-tab-list .p-tab.p-tab-active, .menu-tab-list .p-tab.p-highlight{ border-color: #3864e3 !important; color: #3864e3; box-shadow: 2px 0 2px rgba(0,0,0,.12); background: #fff !important; }
-
+.menu-tab-list .p-tab[aria-selected="true"], .menu-tab-list .p-tab.p-tab-active, .menu-tab-list .p-tab.p-highlight{ border-color: #93acf4 !important; color: #3864e3; box-shadow: 2px 0 2px rgba(0,0,0,.12); background: #fff !important; }
+/* ───────── 탭 로딩 상태: 보더만 Skeleton Shimmer ───────── */
+/* 로딩 클래스 부여된 탭 버튼 */
+.menu-tab-list .p-tab.tab-is-loading { position: relative; --tab-border-w: var(--p-tabs-tab-border-width, 1px); --skel-base: #e9ecef; --skel-mid: #cfd4da; }
+/* 활성 로딩 탭은 블루(#3864e3) 계열로 덮어쓰기 */
+.menu-tab-list .p-tab.tab-is-loading[aria-selected="true"],
+.menu-tab-list .p-tab.tab-is-loading.p-tab-active,
+.menu-tab-list .p-tab.tab-is-loading.p-highlight { --skel-base: #93acf4; --skel-mid: #3864e3; }
+/* 고스트 보더(반짝이)는 ::after에 그림 */
+.menu-tab-list .p-tab.tab-is-loading::after { content: "" !important; position: absolute; inset: 0; border-radius: 9px 9px 0 0; background: linear-gradient(100deg, var(--skel-base) 20%, var(--skel-mid) 40%, var(--skel-base) 60%); background-size: 200% 100%; animation: tabs-skeleton-shimmer 2s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; z-index: 0; pointer-events: none; padding: 2px 2px 0 2px; }
+/* 내용은 위로 올림 */
+.menu-tab-list .p-tab.tab-is-loading > * { position: relative; z-index: 1; }
+@keyframes tabs-skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .menu-tab-list .p-tab.tab-is-loading::after { animation: none; background-position: 0 0; } }
 /* 패널 카드 스타일 */
 .menu-tab-list .p-tabpanels{ position: relative; z-index: 1; background: #fff; border: 1px solid #D5D5D5; border-top: none; border-radius: 5px 5px 10px 10px; box-shadow: 0 0 2px 0.5px rgba(0, 0, 0, .07); padding: 0; }
-.menu-tab-list .p-tabpanel{
-    padding: 20px 20px 50px 20px;
-    position: relative;
-}
+.menu-tab-list .p-tabpanel{ padding: 20px 20px 50px 20px; position: relative; }
 /* 테마가 주는 활성 인디케이터(언더라인/바) 숨김 */
 .menu-tab-list .p-tablist .p-tablist-active-bar, .menu-tab-list .p-tablist .p-tablist-active-indicator, .menu-tab-list .p-tabs .p-tablist-active-bar, .menu-tab-list .p-tabs .p-tablist-active-indicator{ display: none !important; }
-/* 일부 프리셋은 ::after로 언더라인을 그림 → 함께 제거 */
-.menu-tab-list .p-tab::after, .menu-tab-list .p-tab.p-tab-active::after, .menu-tab-list .p-tab[aria-selected="true"]::after{ content: none !important; }
-
+/* 일부 프리셋은 ::after로 언더라인을 그림 → 함께 제거 (로딩 예외) */
+.menu-tab-list .p-tab:not(.tab-is-loading)::after,
+.menu-tab-list .p-tab.p-tab-active:not(.tab-is-loading)::after,
+.menu-tab-list .p-tab[aria-selected="true"]:not(.tab-is-loading)::after { content: none !important; }
 .menu-tab-panel { height: 100%; }
-
-.tab-header-actions {
-    display: flex;
-    gap: 7.5px;
-    margin-left: 7.5px;
-}
-
-.tab-header-body {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
-}
-
+.tab-header-actions { display: flex; gap: 7.5px; margin-left: 7.5px; }
+.tab-header-body { display: flex; align-items: center; position: relative; width: 100%; }
 /* ───────── 애니메이션: 새 탭 버튼 등장 (방법 A) ───────── */
-@keyframes tabFadeIn {
-  0%   { opacity: 0; transform: translateY(6px) scale(0.98); }
-  100% { opacity: 1; transform: translateY(0)   scale(1); }
-}
+@keyframes tabFadeIn { 0% { opacity: 0; transform: translateY(6px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 /* 성능 최적화용 힌트 */
-.menu-tab-list .swiper-slide .tab-item-wrap {
-  will-change: transform, opacity;
-}
+.menu-tab-list .swiper-slide .tab-item-wrap { will-change: transform, opacity; }
 /* 새로 DOM에 추가된 슬라이드(첫 번째)에만 등장 애니메이션 적용 */
 /* is-prepending 동안 첫 번째 슬라이드 컨텐츠만 페이드/슬라이드-인 */
-.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:first-child .tab-item-wrap {
-  animation: tabFadeIn .22s cubic-bezier(.2,.8,.2,1) both;
-}
-
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:first-child .tab-item-wrap { animation: tabFadeIn .22s cubic-bezier(.2,.8,.2,1) both; }
 /* ───────── 기존 탭들: 오른쪽으로 밀리는 느낌 ───────── */
-@keyframes tabsPushRight {
-  0%   { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
-}
+@keyframes tabsPushRight { 0% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
 /* 새 탭이 prepend되는 순간(wrapper에 is-prepending이 붙은 짧은 시간) */
-.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending
-  .swiper-slide:not(:first-child) .tab-item-wrap {
-  animation: tabsPushRight .22s cubic-bezier(.2,.8,.2,1) both;
-}
+.menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:not(:first-child) .tab-item-wrap { animation: tabsPushRight .22s cubic-bezier(.2,.8,.2,1) both; }
 /* 선택: 가벼운 스태거 예시 (필요 시 주석 해제) */
 .menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(3) .tab-item-wrap { animation-delay: .01s; }
 .menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(4) .tab-item-wrap { animation-delay: .02s; }
 .menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(5) .tab-item-wrap { animation-delay: .03s; }
 .menu-tab-list .tabs-swiper .swiper-wrapper.is-prepending .swiper-slide:nth-child(6) .tab-item-wrap { animation-delay: .04s; }
-
 /* ───────── 탭 제거(닫기) 애니메이션 ───────── */
-@keyframes tabLeaveOut {
-  0%   { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(6px) scale(0.98); }
-}
-@keyframes tabPanelLeaveOut {
-  0%   { opacity: 1; transform: none; }
-  100% { opacity: 0; transform: translateY(6px); }
-}
+@keyframes tabLeaveOut { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(6px) scale(0.98); } }
+@keyframes tabPanelLeaveOut { 0% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(6px); } }
 /* 탭 버튼(슬라이드 내부)의 퇴장 */
-.menu-tab-list .swiper-slide .tab-item-wrap.is-leaving {
-  animation: tabLeaveOut .22s cubic-bezier(.2,.8,.2,1) both;
-}
-/* 탭 패널의 퇴장 (선택사항: 미묘하게) */
-.menu-tab-list .p-tabpanels .p-tabpanel.is-leaving {
-  animation: tabPanelLeaveOut .18s ease-out both;
-}
+.menu-tab-list .swiper-slide .tab-item-wrap.is-leaving { animation: tabLeaveOut .22s cubic-bezier(.2,.8,.2,1) both; }
+/* ───────── 패널 Shimmer 오버레이 (dim 버전) ───────── */
+.loading-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; will-change: transform, opacity; }
+.loading-overlay.loading-overlay--dim { background: rgba(0, 0, 0, 0.06); }
+.loading-overlay::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%); transform: translateX(-100%); will-change: transform, opacity; animation: pv-shimmer 2s ease-in-out infinite; mix-blend-mode: screen; pointer-events: none; }
+@keyframes pv-shimmer { 0% { transform: translateX(-100%); } 60% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .loading-overlay::before { animation-duration: 3s; opacity: 0.5; } }
