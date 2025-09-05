@@ -125,3 +125,47 @@
 .acc-b5.p-accordion [data-pc-name="accordionheader"][data-p-disabled="true"] {
   opacity: .55; cursor: not-allowed;
 }
+
+/* ───────────────── DataTable Row Expansion 토글 아이콘 회전 (정확 매칭: .p-datatable-row-toggle-button) ───────────────── */
+/* 스코프: .dt-exp-anim */
+
+/* 버튼 기본 레이아웃 */
+.dt-exp-anim .p-datatable-row-toggle-button {
+  position: relative; /* ::after 배치용 */
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.75rem; height: 1.75rem; /* 필요 시 조정 */
+  color: inherit; /* 아이콘 색 = 현재 글자색 */
+}
+
+/* PrimeVue 기본 토글 아이콘 숨김 */
+.dt-exp-anim .p-datatable-row-toggle-button .p-datatable-row-toggle-icon,
+.dt-exp-anim .p-datatable-row-toggle-button [data-pc-section="rowtogglericon"] {
+  display: none !important;
+}
+
+/* 커스텀 아이콘(chevron-down)을 ::after로 그림 + 애니메이션 */
+.dt-exp-anim .p-datatable-row-toggle-button::after {
+  content: "";
+  width: 1rem; height: 1rem;
+  display: inline-block;
+  background: currentColor; /* 텍스트 색과 동기화 */
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='black'><path d='M3.22 5.97a.75.75 0 0 1 1.06 0L8 9.69l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L3.22 7.03a.75.75 0 0 1 0-1.06z'/></svg>") no-repeat center / contain;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='black'><path d='M3.22 5.97a.75.75 0 0 1 1.06 0L8 9.69l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L3.22 7.03a.75.75 0 0 1 0-1.06z'/></svg>") no-repeat center / contain;
+  transition: transform .2s ease; /* 부드러운 회전 */
+  transform-origin: center;
+}
+
+/* 열림 상태에서 180도 회전 */
+.dt-exp-anim .p-datatable-row-toggle-button[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+/* 접근성: 키보드 포커스 링(옵션) */
+.dt-exp-anim .p-datatable-row-toggle-button:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+  border-radius: .25rem;
+}
+
+/* td 전체가 클릭 가능함을 시각적으로 암시 */
+.dt-exp-wide td.expander-cell { cursor: pointer; }

@@ -197,12 +197,14 @@
                 <p class="text-sm text-gray-600">행을 펼쳐서 상세 정보 또는 서브 그리드를 표시하는 예제입니다.</p>
 
                 <p-datatable
+                        class="dt-exp-anim dt-exp-wide"
                         data-key="code"
                         :value="productsWithDetails"
                         v-model:expanded-rows="expandedRows"
                         scroll-height="flex"
                 >
-                    <p-column expander style="width:3rem" frozen align-frozen="left" :column-resizable-disabled="true"></p-column>
+                    <!-- body-class=expander-cell: 디렉티브가 이 셀 전체를 토글 영역으로 만듭니다 -->
+                    <p-column expander body-class="expander-cell" style="width:3rem" frozen align-frozen="left" :column-resizable-disabled="true"></p-column>
                     <p-column field="code" header="Code" style="min-width:10rem"></p-column>
                     <p-column field="name" header="Name" style="min-width:14rem"></p-column>
                     <p-column field="category" header="Category" style="min-width:12rem"></p-column>
@@ -417,6 +419,55 @@
     },
   });
 
+  /* ★★★ DataTable Row Expansion: expander 셀(td) 전체 클릭/키보드로 토글하는 디렉티브 ★★★
+     사용법(필수 2가지):
+     1) 테이블에 범위 클래스 추가: class="dt-exp-wide"
+     2) 확장 컬럼에 바디 클래스 부여: <p-column expander body-class="expander-cell" ...>
+     적용 결과: td.expander-cell 어디를 클릭/Enter/Space 해도 내부의 실제 토글 버튼
+     (.p-datatable-row-toggle-button)을 클릭해 Row Expansion을 열고/닫습니다.
+     접근성: 실제 버튼을 대리 클릭하므로 aria-expanded, 포커스, 키보드 내비게이션은 PrimeVue 기본을 유지합니다.
+  */
+  app.directive('expand-td-toggle', {
+    mounted(el) {
+      const isInteractive = (t) => !!t.closest('a,button,input,select,textarea,label,[role="button"],[contenteditable="true"]');
+      const isRealToggleBtn = (t) => !!t.closest('.p-datatable-row-toggle-button');
+      const inScopeTable = (t) => !!t.closest('.dt-exp-wide');
+
+      const click = (e) => {
+        if (!inScopeTable(e.target)) return;
+        if (isRealToggleBtn(e.target)) return; // 원래 버튼 클릭은 패스
+        if (isInteractive(e.target)) return;   // 다른 인터랙티브 요소 무시
+
+        const cell = e.target.closest('td.expander-cell');
+        if (!cell || !el.contains(cell)) return;
+        const btn = cell.querySelector('.p-datatable-row-toggle-button');
+        if (btn) btn.click();
+      };
+
+      const keydown = (e) => {
+        if (!(e.key === 'Enter' || e.key === ' ' || e.code === 'Space')) return;
+        if (!inScopeTable(e.target)) return;
+        const cell = e.target.closest('td.expander-cell');
+        if (!cell || !el.contains(cell)) return;
+        const btn = cell.querySelector('.p-datatable-row-toggle-button');
+        if (!btn) return;
+        e.preventDefault();
+        btn.click();
+      };
+
+      el.__expWideHandlers = { click, keydown };
+      // 테이블 내부 위임: 버블 단계에서 처리
+      el.addEventListener('click', click);
+      el.addEventListener('keydown', keydown);
+    },
+    unmounted(el) {
+      const h = el.__expWideHandlers; if (!h) return;
+      el.removeEventListener('click', h.click);
+      el.removeEventListener('keydown', h.keydown);
+      delete el.__expWideHandlers;
+    }
+  });
+
   /* ★★★ DataTable 내부 스크롤 영역에만 OS 적용하는 디렉티브 ★★★ */
   app.directive('os-datatable', {
     mounted(el, binding) {
@@ -508,7 +559,10 @@
           scrollHeight: props.scrollHeight,
           ...attrs
         }, slots),
-        [[app._context.directives['os-datatable'], {mode: 'auto', autoHide: 'never', axis: 'both'}]]
+        [
+          [app._context.directives['os-datatable'], {mode: 'auto', autoHide: 'never', axis: 'both'}],
+          [app._context.directives['expand-td-toggle']]
+        ]
       );
     }
   });
