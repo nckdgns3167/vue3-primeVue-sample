@@ -102,10 +102,7 @@
 .acc-b5.p-accordion [data-pc-name="accordionheader"] .accb5-toggle { transition: transform .2s ease; }
 .acc-b5.p-accordion [data-pc-name="accordionheader"][aria-expanded="true"] .accb5-toggle { transform: rotate(180deg); }
 /* 본문(컨텐츠) */
-.acc-b5.p-accordion [data-pc-name="accordioncontent"] {
-  background: #fff; color: #212529;
-  border-top: 1px solid #dee2e6;             /* 헤더와 본문 사이 분할선 */
-}
+.acc-b5.p-accordion [data-pc-name="accordioncontent"] { background: #fff; color: #212529; }
 /* Disabled */
 .acc-b5.p-accordion [data-pc-name="accordionpanel"][data-p-disabled="true"],
 .acc-b5.p-accordion [data-pc-name="accordionheader"][data-p-disabled="true"] {
