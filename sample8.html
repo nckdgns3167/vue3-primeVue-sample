@@ -58,12 +58,9 @@
 
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">최초 열린 상태</h2>
-                <p-accordion class="acc-b5" value="0">
+                <p-accordion value="0">
                     <p-accordion-panel value="0">
-                        <p-accordion-header>
-                            <span class="flex-1">타이틀</span>
-                            <i class="pi pi-chevron-down accb5-toggle transition-transform duration-200" aria-hidden="true"></i>
-                        </p-accordion-header>
+                        <p-accordion-header title="타이틀"></p-accordion-header>
                         <p-accordion-content>컨텐츠</p-accordion-content>
                     </p-accordion-panel>
                 </p-accordion>
@@ -71,12 +68,9 @@
 
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">최초 닫힌 상태</h2>
-                <p-accordion class="acc-b5" :value="[]">
+                <p-accordion :value="[]">
                     <p-accordion-panel value="0">
-                        <p-accordion-header>
-                            <span class="flex-1">타이틀</span>
-                            <i class="pi pi-chevron-down accb5-toggle transition-transform duration-200" aria-hidden="true"></i>
-                        </p-accordion-header>
+                        <p-accordion-header  title="타이틀"></p-accordion-header>
                         <p-accordion-content>컨텐츠</p-accordion-content>
                     </p-accordion-panel>
                 </p-accordion>
@@ -84,12 +78,9 @@
 
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">Disabled</h2>
-                <p-accordion class="acc-b5" :value="[]">
+                <p-accordion :value="[]">
                     <p-accordion-panel value="0" disabled>
-                        <p-accordion-header>
-                            <span class="flex-1">타이틀</span>
-                            <i class="pi pi-chevron-down accb5-toggle transition-transform duration-200 opacity-55" aria-hidden="true"></i>
-                        </p-accordion-header>
+                        <p-accordion-header  title="타이틀" icon-class="opacity-55"></p-accordion-header>
                         <p-accordion-content>컨텐츠</p-accordion-content>
                     </p-accordion-panel>
                 </p-accordion>
@@ -118,10 +109,44 @@
 
     app.component('p-toolbar', Toolbar);
     app.component('p-button', Button);
-    app.component('p-accordion', Accordion);
-    app.component('p-accordion-panel', AccordionPanel);
-    app.component('p-accordion-header', AccordionHeader);
-    app.component('p-accordion-content', AccordionContent);
+
+    // 래퍼: p-accordion 기본 class="acc-b5" 적용 + header 기본 슬롯 생성
+    if (Accordion && AccordionPanel && AccordionHeader && AccordionContent) {
+        const h = Vue.h;
+        app.component('p-accordion', {
+            setup(_, { attrs, slots }) {
+                return () => {
+                    const userClass = attrs && attrs.class;
+                    const mergedClass = [ 'acc-b5', userClass ].filter(Boolean).join(' ');
+                    const passAttrs = { ...attrs, class: mergedClass };
+                    return h(Accordion, passAttrs, slots);
+                };
+            }
+        });
+        app.component('p-accordion-panel', {
+            setup(_, { attrs, slots }) { return () => h(AccordionPanel, attrs, slots); }
+        });
+        app.component('p-accordion-header', {
+            props: { title: { type: String, default: '' }, iconClass: { type: String, default: '' } },
+            setup(props, { attrs, slots }) {
+                return () => {
+                    const hasCustom = !!(slots.default && slots.default().length);
+                    if (hasCustom) return h(AccordionHeader, attrs, slots);
+                    const titleText = props.title || attrs?.title || '';
+                    const iconCls = 'pi pi-chevron-down accb5-toggle transition-transform duration-200' + (props.iconClass ? (' ' + props.iconClass) : '');
+                    return h(AccordionHeader, attrs, {
+                        default: () => [
+                            h('span', { class: 'flex-1' }, titleText),
+                            h('i', { class: iconCls, 'aria-hidden': 'true' })
+                        ]
+                    });
+                };
+            }
+        });
+        app.component('p-accordion-content', {
+            setup(_, { attrs, slots }) { return () => h(AccordionContent, attrs, slots); }
+        });
+    }
 
     app.component('overlay-scrollbars', {
         props: ['style', 'class'],
