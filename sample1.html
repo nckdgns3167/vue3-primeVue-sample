@@ -253,15 +253,9 @@
                 <h2 class="text-lg font-semibold mb-2">DatePicker</h2>
                 <p-date-picker
                         v-model="date"
-                        date-format="yy-mm-dd"
                         :min-date="minDate"
                         :max-date="maxDate"
-                        show-button-bar
-                        show-icon
-                        fluid
-                        icon-display="input"
-                        :manual-input="false"
-                        class="w-full"
+                        :locale="{ rangeSeparator: ' ~ ' }"
                 ></p-date-picker>
                 <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
                 <p class="text-sm text-gray-600">표시값: <code>{{ formattedDate }}</code></p>
@@ -270,19 +264,12 @@
 
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">DatePicker (Range)</h2>
-                <p-date-picker
+                <p-range-picker
                         v-model="dateRange"
-                        selection-mode="range"
-                        date-format="yy-mm-dd"
                         :min-date="minDate"
                         :max-date="maxDate"
-                        show-button-bar
-                        show-icon
-                        fluid
-                        icon-display="input"
-                        :manual-input="false"
-                        class="w-full"
-                ></p-date-picker>
+                        :locale="{ rangeSeparator: ' ~ ' }"
+                ></p-range-picker>
                 <p class="text-xs text-gray-500 mt-1">허용 범위: <code>{{ minDate ? formattedBound(minDate) : '-' }}</code> ~ <code>{{ maxDate ? formattedBound(maxDate) : '-' }}</code></p>
                 <p class="text-sm text-gray-600">표시값: <code>{{ formattedDateRange }}</code></p>
                 <p class="text-sm text-gray-600">실제 상태값: <code>{{ rawDateRangeValue }}</code></p>
@@ -351,7 +338,7 @@
 </div>
 
 <script>
-    const {createApp, ref, computed, reactive} = Vue;
+    const {createApp, ref, computed, reactive, h, mergeProps, nextTick} = Vue;
 
     const app = createApp({
         setup() {
@@ -576,7 +563,9 @@
             monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
             monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
             today: '오늘',
-            clear: '지우기'
+            clear: '지우기',
+            rangeSeparator: ' ~ ',
+            multipleSeparator: ', '
         }
     });
 
@@ -586,7 +575,7 @@
     app.component('p-textarea', Textarea);
     app.component('p-password', Password);
     app.component('p-select', Select);
-    app.component('p-date-picker', DatePicker);
+    // app.component('p-date-picker', DatePicker);
     app.component('p-multi-select', MultiSelect);
     app.component('p-checkbox', Checkbox);
     app.component('p-radio-button', RadioButton);
@@ -599,6 +588,200 @@
     app.component('p-input-icon', InputIcon);
     app.component('p-toolbar', Toolbar);
     app.component('p-button', Button);
+
+    const baseDefaults = Object.freeze({
+        dateFormat: 'yy-mm-dd',
+        buttonBar: 'custom',   // 'default' | 'custom' | 'none'
+        showIcon: true,
+        iconDisplay: 'input',
+        manualInput: false,
+        fluid: true,
+        closeOnClear: true,
+        closeOnToday: true,
+    });
+
+    const todayDate = () => {
+        const t = new Date();
+        return new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    };
+
+    // 패널 DOM 탐색(PrimeVue 4.x의 구조 가정)
+    function findOpenDatepickerOverlay(root = document) {
+        // aria-hidden="false" 이거나 보이는 p-datepicker를 우선 탐색
+        return (
+            root.querySelector('.p-datepicker[aria-hidden="false"]') ||
+            root.querySelector('.p-datepicker:not([aria-hidden="true"])')
+        );
+    }
+
+    // 안전 닫기(official → private → blur → ESC → outside click)
+    async function closePanelSafely(dpRef) {
+        await nextTick();
+        const inst = dpRef?.value;
+
+        // 1) 공식/반공식 메서드
+        try { if (inst?.hide) { inst.hide(); return; } } catch (_) {}
+        try { if (inst?.overlayRef?.hide) { inst.overlayRef.hide(); return; } } catch (_) {}
+
+        // 2) 입력 blur (focus-out로 닫히는 케이스)
+        try {
+            const inputEl =
+                inst?.$el?.querySelector?.('input') ||
+                document.activeElement;
+            inputEl?.blur?.();
+            await nextTick();
+        } catch (_) {}
+
+        // 3) 오버레이 DOM에 직접 ESC 키 이벤트
+        try {
+            const target = findOpenDatepickerOverlay(inst?.$el?.ownerDocument || document) || document;
+            const escDown = new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', which: 27, keyCode: 27, bubbles: true });
+            const escUp   = new KeyboardEvent('keyup',   { key: 'Escape', code: 'Escape', which: 27, keyCode: 27, bubbles: true });
+            target.dispatchEvent(escDown);
+            target.dispatchEvent(escUp);
+            await nextTick();
+        } catch (_) {}
+
+        // 4) 바깥 클릭(overlay outside click 시나리오)
+        try {
+            const evs = ['pointerdown', 'mousedown', 'mouseup', 'click'];
+            evs.forEach(type => document.dispatchEvent(new MouseEvent(type, { bubbles: true })));
+        } catch (_) {}
+    }
+
+    function buildButtonBar(type, emit, dpRef, opts) {
+        const btnCls = 'p-button p-component p-button-secondary p-button-text p-button-sm';
+        return h('div', { class: 'p-datepicker-buttonbar', 'data-pc-section': 'buttonbar' }, [
+            // Today
+            h('button', {
+                type: 'button',
+                class: btnCls,
+                'aria-label': '오늘',
+                onClick: async () => {
+                    if (type === 'single') emit('update:modelValue', todayDate());
+                    else { const t = todayDate(); emit('update:modelValue', [t, t]); }
+                    if (opts.closeOnToday) await closePanelSafely(dpRef);
+                }
+            }, [ h('span', { class: 'p-button-label', 'data-pc-section': 'label' }, '오늘') ]),
+            // Clear
+            h('button', {
+                type: 'button',
+                class: btnCls,
+                'aria-label': '지우기',
+                onClick: async () => {
+                    emit('update:modelValue', null);
+                    if (opts.closeOnClear) await closePanelSafely(dpRef);
+                }
+            }, [ h('span', { class: 'p-button-label', 'data-pc-section': 'label' }, '지우기') ]),
+        ]);
+    }
+
+    // ───────────────── p-date-picker (single)
+    const PDatePicker = {
+        name: 'p-date-picker',
+        inheritAttrs: false,
+        props: {
+            modelValue: { type: [Date, String, Number, null], default: null },
+            minDate: { type: Date, default: null },
+            maxDate: { type: Date, default: null },
+            disabled: { type: Boolean, default: false },
+            placeholder: { type: String, default: '' },
+            dateFormat: { type: String, default: baseDefaults.dateFormat },
+            buttonBar: { type: String, default: baseDefaults.buttonBar },
+            showIcon: { type: Boolean, default: baseDefaults.showIcon },
+            iconDisplay: { type: String, default: baseDefaults.iconDisplay },
+            manualInput: { type: Boolean, default: baseDefaults.manualInput },
+            fluid: { type: Boolean, default: baseDefaults.fluid },
+            closeOnClear: { type: Boolean, default: baseDefaults.closeOnClear },
+            closeOnToday: { type: Boolean, default: baseDefaults.closeOnToday },
+        },
+        emits: ['update:modelValue'],
+        setup(props, { attrs, slots, emit }) {
+            const dpRef = ref(null);
+            const footer = slots.footer || (() => props.buttonBar === 'custom' ? buildButtonBar('single', emit, dpRef, props) : undefined);
+
+            return () =>
+                h(
+                    DatePicker,
+                    mergeProps(
+                        {
+                            ref: dpRef,
+                            modelValue: props.modelValue ?? null,
+                            'onUpdate:modelValue': v => emit('update:modelValue', v ?? null),
+                            dateFormat: props.dateFormat,
+                            showButtonBar: props.buttonBar === 'default',
+                            showIcon: props.showIcon,
+                            iconDisplay: props.iconDisplay,
+                            manualInput: props.manualInput,
+                            fluid: props.fluid,
+                            minDate: props.minDate || null,
+                            maxDate: props.maxDate || null,
+                            disabled: props.disabled,
+                            placeholder: props.placeholder,
+                        },
+                        attrs
+                    ),
+                    { ...(footer ? { footer } : {}), ...(slots.default ? { default: slots.default } : {}) }
+                );
+        },
+    };
+
+    // ──────────────── p-range-picker (range)
+    const PRangePicker = {
+        name: 'p-range-picker',
+        inheritAttrs: false,
+        props: {
+            modelValue: { type: [Array, null], default: null }, // [Date, Date] | null
+            minDate: { type: Date, default: null },
+            maxDate: { type: Date, default: null },
+            disabled: { type: Boolean, default: false },
+            placeholder: { type: String, default: '' },
+            dateFormat: { type: String, default: baseDefaults.dateFormat },
+            buttonBar: { type: String, default: baseDefaults.buttonBar },
+            showIcon: { type: Boolean, default: baseDefaults.showIcon },
+            iconDisplay: { type: String, default: baseDefaults.iconDisplay },
+            manualInput: { type: Boolean, default: baseDefaults.manualInput },
+            fluid: { type: Boolean, default: baseDefaults.fluid },
+            closeOnClear: { type: Boolean, default: baseDefaults.closeOnClear },
+            closeOnToday: { type: Boolean, default: baseDefaults.closeOnToday },
+        },
+        emits: ['update:modelValue'],
+        setup(props, { attrs, slots, emit }) {
+            const dpRef = ref(null);
+            const footer = slots.footer || (() => props.buttonBar === 'custom' ? buildButtonBar('range', emit, dpRef, props) : undefined);
+
+            return () =>
+                h(
+                    DatePicker,
+                    mergeProps(
+                        {
+                            ref: dpRef,
+                            selectionMode: 'range',
+                            modelValue: props.modelValue ?? null,
+                            'onUpdate:modelValue': v => {
+                                const ok = Array.isArray(v) && v[0] instanceof Date && v[1] instanceof Date;
+                                emit('update:modelValue', ok ? v : null);
+                            },
+                            dateFormat: props.dateFormat,
+                            showButtonBar: props.buttonBar === 'default',
+                            showIcon: props.showIcon,
+                            iconDisplay: props.iconDisplay,
+                            manualInput: props.manualInput,
+                            fluid: props.fluid,
+                            minDate: props.minDate || null,
+                            maxDate: props.maxDate || null,
+                            disabled: props.disabled,
+                            placeholder: props.placeholder,
+                        },
+                        attrs
+                    ),
+                    { ...(footer ? { footer } : {}), ...(slots.default ? { default: slots.default } : {}) }
+                );
+        },
+    };
+
+    app.component('p-date-picker', PDatePicker)
+    app.component('p-range-picker', PRangePicker)
 
     app.component('overlay-scrollbars', {
         props: ['style', 'class'],
