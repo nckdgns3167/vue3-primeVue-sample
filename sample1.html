@@ -596,8 +596,10 @@
         iconDisplay: 'input',
         manualInput: false,
         fluid: true,
-        closeOnClear: true,
-        closeOnToday: true,
+        closeOnClear: true,    // Clear 시 패널 닫기
+        closeOnToday: true,    // Today 시 패널 닫기
+        showClear: true,       // 입력란 우측 X 아이콘 (Select와 동일 옵션명)
+        clearIconClass: 'pi pi-times' // 필요시 사용자 변경 가능
     });
 
     const todayDate = () => {
@@ -605,34 +607,28 @@
         return new Date(t.getFullYear(), t.getMonth(), t.getDate());
     };
 
-    // 패널 DOM 탐색(PrimeVue 4.x의 구조 가정)
+    // 오버레이 찾기(보이는 DatePicker)
     function findOpenDatepickerOverlay(root = document) {
-        // aria-hidden="false" 이거나 보이는 p-datepicker를 우선 탐색
         return (
             root.querySelector('.p-datepicker[aria-hidden="false"]') ||
             root.querySelector('.p-datepicker:not([aria-hidden="true"])')
         );
     }
 
-    // 안전 닫기(official → private → blur → ESC → outside click)
+    // 패널 닫기 (official → private → blur → ESC → outside click)
     async function closePanelSafely(dpRef) {
         await nextTick();
         const inst = dpRef?.value;
 
-        // 1) 공식/반공식 메서드
         try { if (inst?.hide) { inst.hide(); return; } } catch (_) {}
         try { if (inst?.overlayRef?.hide) { inst.overlayRef.hide(); return; } } catch (_) {}
 
-        // 2) 입력 blur (focus-out로 닫히는 케이스)
         try {
-            const inputEl =
-                inst?.$el?.querySelector?.('input') ||
-                document.activeElement;
+            const inputEl = inst?.$el?.querySelector?.('input') || document.activeElement;
             inputEl?.blur?.();
             await nextTick();
         } catch (_) {}
 
-        // 3) 오버레이 DOM에 직접 ESC 키 이벤트
         try {
             const target = findOpenDatepickerOverlay(inst?.$el?.ownerDocument || document) || document;
             const escDown = new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', which: 27, keyCode: 27, bubbles: true });
@@ -642,38 +638,83 @@
             await nextTick();
         } catch (_) {}
 
-        // 4) 바깥 클릭(overlay outside click 시나리오)
         try {
-            const evs = ['pointerdown', 'mousedown', 'mouseup', 'click'];
-            evs.forEach(type => document.dispatchEvent(new MouseEvent(type, { bubbles: true })));
+            ['pointerdown', 'mousedown', 'mouseup', 'click'].forEach(type =>
+                document.dispatchEvent(new MouseEvent(type, { bubbles: true }))
+            );
         } catch (_) {}
     }
 
+    // PrimeVue 기본 버튼바와 동일한 마크업 클래스 사용
     function buildButtonBar(type, emit, dpRef, opts) {
         const btnCls = 'p-button p-component p-button-secondary p-button-text p-button-sm';
         return h('div', { class: 'p-datepicker-buttonbar', 'data-pc-section': 'buttonbar' }, [
-            // Today
             h('button', {
-                type: 'button',
-                class: btnCls,
-                'aria-label': '오늘',
+                type: 'button', class: btnCls, 'aria-label': '오늘',
                 onClick: async () => {
                     if (type === 'single') emit('update:modelValue', todayDate());
                     else { const t = todayDate(); emit('update:modelValue', [t, t]); }
                     if (opts.closeOnToday) await closePanelSafely(dpRef);
                 }
             }, [ h('span', { class: 'p-button-label', 'data-pc-section': 'label' }, '오늘') ]),
-            // Clear
             h('button', {
-                type: 'button',
-                class: btnCls,
-                'aria-label': '지우기',
+                type: 'button', class: btnCls, 'aria-label': '지우기',
                 onClick: async () => {
                     emit('update:modelValue', null);
                     if (opts.closeOnClear) await closePanelSafely(dpRef);
                 }
             }, [ h('span', { class: 'p-button-label', 'data-pc-section': 'label' }, '지우기') ]),
         ]);
+    }
+
+    // 공통: input 아이콘 슬롯 생성 (Select의 showClear UX와 동일)
+    function makeInputIconSlot(kind, props, emit, dpRef) {
+        const hasValue = () => {
+            if (kind === 'single') return props.modelValue instanceof Date;
+            return Array.isArray(props.modelValue)
+                && props.modelValue[0] instanceof Date
+                && props.modelValue[1] instanceof Date;
+        };
+
+        const clearHandler = async () => {
+            emit('update:modelValue', null);
+            if (props.closeOnClear) await closePanelSafely(dpRef);
+        };
+
+        const openHandler = (ctx) => ctx?.clickCallback?.();
+
+        return (ctx) => {
+            // X (Select의 clear UI와 유사한 클래스)
+            const clearIconEl = Vue.h('i', {
+                class: `p-select-clear-icon ${props.clearIconClass || 'pi pi-times'} cursor-pointer`,
+                role: 'button',
+                tabindex: 0,
+                style: { marginRight: '-10px' },
+                'aria-label': '지우기',
+                onClick: clearHandler,
+                onKeydown: (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); clearHandler(); }
+                }
+            });
+
+            // 📅
+            const calendarIconEl = Vue.h('i', {
+                class: 'pi pi-calendar cursor-pointer',
+                role: 'button',
+                tabindex: 0,
+                'aria-label': '달력 열기',
+                onClick: () => openHandler(ctx),
+                onKeydown: (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openHandler(ctx); }
+                }
+            });
+
+            // 순서: X → 📅 (X가 달력 아이콘의 "왼쪽"에 오도록)
+            if (props.showClear !== false && hasValue()) {
+                return [clearIconEl, calendarIconEl];
+            }
+            return [calendarIconEl];
+        };
     }
 
     // ───────────────── p-date-picker (single)
@@ -686,34 +727,55 @@
             maxDate: { type: Date, default: null },
             disabled: { type: Boolean, default: false },
             placeholder: { type: String, default: '' },
+
+            // 공통 기본값/옵션
             dateFormat: { type: String, default: baseDefaults.dateFormat },
-            buttonBar: { type: String, default: baseDefaults.buttonBar },
-            showIcon: { type: Boolean, default: baseDefaults.showIcon },
-            iconDisplay: { type: String, default: baseDefaults.iconDisplay },
-            manualInput: { type: Boolean, default: baseDefaults.manualInput },
-            fluid: { type: Boolean, default: baseDefaults.fluid },
+            buttonBar:  { type: String, default: baseDefaults.buttonBar }, // 'default' | 'custom' | 'none'
+            showIcon:   { type: Boolean, default: baseDefaults.showIcon },
+            iconDisplay:{ type: String, default: baseDefaults.iconDisplay },
+            manualInput:{ type: Boolean, default: baseDefaults.manualInput },
+            fluid:      { type: Boolean, default: baseDefaults.fluid },
+
+            // clear 관련 (Select와 동일 옵션명: showClear)
+            showClear:     { type: Boolean, default: baseDefaults.showClear },
+            clearIconClass:{ type: String,  default: baseDefaults.clearIconClass },
+
+            // 패널 닫기 정책
             closeOnClear: { type: Boolean, default: baseDefaults.closeOnClear },
             closeOnToday: { type: Boolean, default: baseDefaults.closeOnToday },
         },
         emits: ['update:modelValue'],
         setup(props, { attrs, slots, emit }) {
-            const dpRef = ref(null);
-            const footer = slots.footer || (() => props.buttonBar === 'custom' ? buildButtonBar('single', emit, dpRef, props) : undefined);
+            const dpRef = Vue.ref(null);
+
+            const footer = slots.footer || (() =>
+                    props.buttonBar === 'custom' ? buildButtonBar('single', emit, dpRef, props) : undefined
+            );
+
+            const inputicon = slots.inputicon || makeInputIconSlot('single', props, emit, dpRef);
 
             return () =>
-                h(
-                    DatePicker,
-                    mergeProps(
+                Vue.h(
+                    PrimeVue.DatePicker,
+                    Vue.mergeProps(
                         {
                             ref: dpRef,
                             modelValue: props.modelValue ?? null,
                             'onUpdate:modelValue': v => emit('update:modelValue', v ?? null),
+
                             dateFormat: props.dateFormat,
                             showButtonBar: props.buttonBar === 'default',
                             showIcon: props.showIcon,
                             iconDisplay: props.iconDisplay,
                             manualInput: props.manualInput,
                             fluid: props.fluid,
+
+                            // ⬇⬇ 여기 추가: 아이콘 개수에 맞춘 오른쪽 패딩
+                            inputStyle: {
+                                ...(attrs?.inputStyle || {}),
+                                paddingRight: props.iconDisplay === 'input' ? '3.5rem' : '2.25rem'
+                            },
+
                             minDate: props.minDate || null,
                             maxDate: props.maxDate || null,
                             disabled: props.disabled,
@@ -721,7 +783,11 @@
                         },
                         attrs
                     ),
-                    { ...(footer ? { footer } : {}), ...(slots.default ? { default: slots.default } : {}) }
+                    {
+                        ...(footer ? { footer } : {}),
+                        inputicon,
+                        ...(slots.default ? { default: slots.default } : {}),
+                    }
                 );
         },
     };
@@ -736,24 +802,34 @@
             maxDate: { type: Date, default: null },
             disabled: { type: Boolean, default: false },
             placeholder: { type: String, default: '' },
-            dateFormat: { type: String, default: baseDefaults.dateFormat },
-            buttonBar: { type: String, default: baseDefaults.buttonBar },
-            showIcon: { type: Boolean, default: baseDefaults.showIcon },
+
+            dateFormat:  { type: String, default: baseDefaults.dateFormat },
+            buttonBar:   { type: String, default: baseDefaults.buttonBar },
+            showIcon:    { type: Boolean, default: baseDefaults.showIcon },
             iconDisplay: { type: String, default: baseDefaults.iconDisplay },
             manualInput: { type: Boolean, default: baseDefaults.manualInput },
-            fluid: { type: Boolean, default: baseDefaults.fluid },
+            fluid:       { type: Boolean, default: baseDefaults.fluid },
+
+            showClear:      { type: Boolean, default: baseDefaults.showClear },
+            clearIconClass: { type: String,  default: baseDefaults.clearIconClass },
+
             closeOnClear: { type: Boolean, default: baseDefaults.closeOnClear },
             closeOnToday: { type: Boolean, default: baseDefaults.closeOnToday },
         },
         emits: ['update:modelValue'],
         setup(props, { attrs, slots, emit }) {
-            const dpRef = ref(null);
-            const footer = slots.footer || (() => props.buttonBar === 'custom' ? buildButtonBar('range', emit, dpRef, props) : undefined);
+            const dpRef = Vue.ref(null);
+
+            const footer = slots.footer || (() =>
+                    props.buttonBar === 'custom' ? buildButtonBar('range', emit, dpRef, props) : undefined
+            );
+
+            const inputicon = slots.inputicon || makeInputIconSlot('range', props, emit, dpRef);
 
             return () =>
-                h(
-                    DatePicker,
-                    mergeProps(
+                Vue.h(
+                    PrimeVue.DatePicker,
+                    Vue.mergeProps(
                         {
                             ref: dpRef,
                             selectionMode: 'range',
@@ -762,12 +838,20 @@
                                 const ok = Array.isArray(v) && v[0] instanceof Date && v[1] instanceof Date;
                                 emit('update:modelValue', ok ? v : null);
                             },
+
                             dateFormat: props.dateFormat,
                             showButtonBar: props.buttonBar === 'default',
                             showIcon: props.showIcon,
                             iconDisplay: props.iconDisplay,
                             manualInput: props.manualInput,
                             fluid: props.fluid,
+
+                            // ⬇⬇ 오른쪽 패딩 동적
+                            inputStyle: {
+                                ...(attrs?.inputStyle || {}),
+                                paddingRight: props.iconDisplay === 'input' ? '3.5rem' : '2.25rem'
+                            },
+
                             minDate: props.minDate || null,
                             maxDate: props.maxDate || null,
                             disabled: props.disabled,
@@ -775,7 +859,11 @@
                         },
                         attrs
                     ),
-                    { ...(footer ? { footer } : {}), ...(slots.default ? { default: slots.default } : {}) }
+                    {
+                        ...(footer ? { footer } : {}),
+                        inputicon,
+                        ...(slots.default ? { default: slots.default } : {}),
+                    }
                 );
         },
     };
