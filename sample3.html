@@ -56,12 +56,44 @@
                 </template>
             </p-toolbar>
 
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Blank</h2>
+                <p-datatable
+                    :value="[]"
+                    :removable-sort="true"
+                >
+                    <p-column v-for="col in columns"
+                              :key="col.field"
+                              :field="col.field"
+                              :header="col.header"
+                              :sortable="col.sortable !== false"
+                              :removable-sort="col.removableSort !== false"
+                              :style="{ width: col.width, textAlign: col.align }"></p-column>
+                </p-datatable>
+            </section>
+
+            <section class="bg-white p-4 rounded shadow space-y-6">
+                <h2 class="text-lg font-semibold mb-2">Loading</h2>
+                <p-datatable
+                    :value="products"
+                    :removable-sort="true"
+                    :loading="true"
+                >
+                    <p-column v-for="col in columns"
+                              :key="col.field"
+                              :field="col.field"
+                              :header="col.header"
+                              :sortable="col.sortable !== false"
+                              :removable-sort="col.removableSort !== false"
+                              :style="{ width: col.width, textAlign: col.align }"></p-column>
+                </p-datatable>
+            </section>
+
             <section class="bg-white p-4 rounded shadow">
                 <h2 class="text-lg font-semibold mb-2">기본</h2>
                 <p-datatable
                         :value="products"
                         :removable-sort="true"
-                        scroll-height="flex"
                 >
                     <p-column v-for="col in columns"
                               :key="col.field"
@@ -250,32 +282,32 @@
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Frozen Rows</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Virtual Scroll</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Column Group</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Edit Cell</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Add & Delete Row</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
 
             <section class="bg-white p-4 rounded shadow space-y-6">
                 <h2 class="text-lg font-semibold mb-2">Excel Download (Export)</h2>
-                <p class="text-sm text-gray-600">.</p>
+                <p class="text-sm text-gray-600"></p>
             </section>
         </div>
     </overlay-scrollbars>
@@ -542,29 +574,74 @@
 
   // PrimeVue 설정
   app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
-  const {Toolbar, Button, DataTable, Column} = PrimeVue;
+  const {Toolbar, Button, DataTable, Column, ProgressSpinner} = PrimeVue;
+
+  app.component('p-progress-spinner', ProgressSpinner)
 
   app.component('p-datatable', {
-    props: {scrollHeight: {type: String, default: ''}},
-    setup(props, {attrs, slots}) {
-      return () => withDirectives(
-        h(DataTable, {
-          showGridlines: true,
-          stripedRows: true,
-          rowHover: true,
-          scrollable: true,
-          removableSort: true,
-          resizableColumns: true,
-          columnResizeMode: 'expand',
-          scrollHeight: props.scrollHeight,
-          ...attrs
-        }, slots),
-        [
-          [app._context.directives['os-datatable'], {mode: 'auto', autoHide: 'never', axis: 'both'}],
-          [app._context.directives['expand-td-toggle']]
-        ]
-      );
-    }
+      props: {
+          scrollHeight: { type: String, default: '' },
+          osOptions: { type: Object, default: null },
+          expandWide: { type: Boolean, default: true },
+
+          // 통일된 빈/로딩 UI 커스터마이즈용
+          emptyMessage: { type: String, default: '표시할 데이터가 없습니다.' },
+          loadingMessage: { type: String, default: '데이터를 불러오는 중입니다...' },
+          emptyIcon: { type: String, default: 'pi pi-inbox' },
+          placeholderClass: { type: String, default: 'dt-placeholder' },
+      },
+      setup(props, { attrs, slots }) {
+          const renderEmpty = () => (
+              h('div', { class: [props.placeholderClass, 'is-empty'] }, [
+                  h('i', { class: props.emptyIcon, style: 'font-size: 4rem' }),
+                  h('div', { class: 'dt-placeholder-text' }, props.emptyMessage),
+              ])
+          )
+          const renderLoading = () => (
+              h('div', { class: [props.placeholderClass, 'is-loading'] }, [
+                  h(ProgressSpinner, {
+                      style: { width: '44px', height: '44px' },
+                      strokeWidth: '8',
+                      fill: 'transparent',
+                      animationDuration: '.6s',
+                      'aria-label': 'Loading',
+                  })
+              ])
+          );
+
+          const mergedSlots = {
+              ...slots,
+              empty: slots.empty || (() => renderEmpty()),
+              loading: slots.loading || (() => renderLoading())
+          };
+
+          return () => {
+              const vnode = h(
+                  DataTable,
+                  {
+                      showGridlines: true,
+                      stripedRows: true,
+                      rowHover: true,
+                      scrollable: true,
+                      removableSort: true,
+                      resizableColumns: true,
+                      scrollHeight: props.scrollHeight,
+                      ...attrs,
+                  },
+                  mergedSlots
+              );
+
+              const dirList = [];
+              dirList.push([
+                  app._context.directives['os-datatable'],
+                  props.osOptions ? { ...props.osOptions } : { mode: 'auto', autoHide: 'never', axis: 'both' },
+              ]);
+              if (props.expandWide) {
+                  dirList.push([app._context.directives['expand-td-toggle']]);
+              }
+              return withDirectives(vnode, dirList);
+          };
+      },
   });
 
   app.component('p-column', Column);

@@ -139,3 +139,27 @@
 .dt-exp-anim .p-datatable-row-toggle-button:focus-visible { outline: 0; box-shadow: 0 0 0 .25rem rgba(13,110,253,.25); border-radius: .25rem; }
 /* td 전체가 클릭 가능함을 시각적으로 암시 */
 .dt-exp-wide td.expander-cell { cursor: pointer; }
+
+/*.dt-placeholder {*/
+/*    display: flex;*/
+/*    gap: 0.75rem;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    padding: 2rem 1rem;*/
+/*    color: var(--text-color-secondary, #6b7280);*/
+/*    font-size: 0.95rem;*/
+/*}*/
+/*.dt-placeholder .pi { font-size: 1.25rem; opacity: 0.8; }*/
+/*.dt-placeholder.is-loading .pi { color: var(--primary-color, #3b82f6); }*/
+/*.dt-placeholder-text { line-height: 1.35; }*/
+
+.dt-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    color: #dedede;
+    flex-direction: column;
+    gap: 10px;
+}
+.dt-placeholder.is-loading { min-height: 120px; }
