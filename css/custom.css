@@ -70,6 +70,9 @@
 @keyframes pv-shimmer { 0% { transform: translateX(-100%); } 60% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .loading-overlay::before { animation-duration: 3s; opacity: 0.5; } }
 /* ───────────────── Bootstrap 5 느낌의 PrimeVue Accordion 스킨 (PrimeVue 4 DOM 매칭) ───────────────── */
+.p-accordioncontent-content {
+    padding-top: 1.125rem !important;
+}
 /* 사용법: <p-accordion class="acc-b5"> … </p-accordion> */
 .acc-b5.p-accordion[data-pc-name="accordion"] { background: transparent; border: 0; }
 /* 각 패널(아이템) */
@@ -140,19 +143,6 @@
 /* td 전체가 클릭 가능함을 시각적으로 암시 */
 .dt-exp-wide td.expander-cell { cursor: pointer; }
 
-/*.dt-placeholder {*/
-/*    display: flex;*/
-/*    gap: 0.75rem;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*    padding: 2rem 1rem;*/
-/*    color: var(--text-color-secondary, #6b7280);*/
-/*    font-size: 0.95rem;*/
-/*}*/
-/*.dt-placeholder .pi { font-size: 1.25rem; opacity: 0.8; }*/
-/*.dt-placeholder.is-loading .pi { color: var(--primary-color, #3b82f6); }*/
-/*.dt-placeholder-text { line-height: 1.35; }*/
-
 .dt-placeholder {
     display: flex;
     align-items: center;
@@ -163,3 +153,24 @@
     gap: 10px;
 }
 .dt-placeholder.is-loading { min-height: 120px; }
+
+/* 빈 상태(empty) 행: 클릭/hover/포커스 등 비활성화 */
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message,
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message > td {
+    pointer-events: none;         /* 모든 포인터 이벤트 차단 */
+    cursor: default !important;   /* 포인터 커서 방지 */
+    user-select: none;            /* 텍스트 선택 방지(선택) */
+}
+
+/* 빈 행 hover/active 시 배경 변화 제거 */
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message:hover,
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message:active,
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message:focus {
+    background: transparent !important;
+    outline: none !important;
+}
+
+/* (선택) #empty 슬롯 내부 통일 placeholder에도 클릭 차단 */
+.p-datatable .p-datatable-tbody > tr.p-datatable-empty-message .dt-placeholder {
+    pointer-events: none;
+}

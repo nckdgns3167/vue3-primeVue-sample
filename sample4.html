@@ -17,7 +17,13 @@
     <script src="js/tailwindcss.js"></script>
     <script src="/js/swiper-bundle.min.js"></script>
     <script src="/js/overlayscrollbars.browser.es6.min.js"></script>
-
+    <style>
+        /* Aura 프리셋에서도 list 높이를 쉽게 조절 */
+        .p-picklist .p-listbox.p-component {
+            min-height: 260px !important;
+            max-height: 260px !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
 <div id="app">
@@ -57,40 +63,100 @@
             </p-toolbar>
 
             <section class="bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-semibold mb-4">PickList (이동만, Reorder 비활성)</h2>
 
+                <p-pick-list
+                    v-model="cities"
+                    data-key="code"
+                    :show-source-controls="false"
+                    :show-target-controls="false"
+                    :dragdrop="false"
+                    class="w-full"
+                    breakpoint="1000px"
+                >
+                    <template #sourceheader>
+                        <div class="flex items-center justify-between w-full">
+                            <span>전체 도시</span>
+                            <span class="text-xs text-gray-500">{{ cities[0].length }}개</span>
+                        </div>
+                    </template>
+                    <template #targetheader>
+                        <div class="flex items-center justify-between w-full">
+                            <span>선택된 도시</span>
+                            <span class="text-xs text-gray-500">{{ cities[1].length }}개</span>
+                        </div>
+                    </template>
+                    <!-- 각 아이템 렌더링 -->
+                    <template #item="{ item }">
+                        <div class="flex items-center gap-2">
+                            <i class="pi pi-map-marker text-gray-500"></i>
+                            <span>{{ item.name }}</span>
+                            <span class="text-gray-400 text-xs">({{ item.code }})</span>
+                        </div>
+                    </template>
+                </p-pick-list>
+
+                <div class="mt-4 flex gap-2">
+                    <p-button label="선택 결과 콘솔 출력" size="small" @click="logSelected"></p-button>
+                    <p-button label="선택 초기화" size="small" severity="secondary" @click="reset"></p-button>
+                </div>
             </section>
         </div>
     </overlay-scrollbars>
 </div>
 
 <script>
-    const {createApp, ref} = Vue;
+    const { createApp, ref } = Vue;
 
-    /* ─────────────────────────────────────────────────────────────
-       App
-    ───────────────────────────────────────────────────────────── */
     const app = createApp({
         setup() {
+            // PickList는 v-model로 [sourceArray, targetArray] 형태를 받습니다.
+            const cities = ref([
+                // source
+                [
+                    { name: 'Seoul', code: 'SEL' },
+                    { name: 'Busan', code: 'BSN' },
+                    { name: 'Incheon', code: 'ICH' },
+                    { name: 'Daegu', code: 'DGU' },
+                    { name: 'Daejeon', code: 'DJN' },
+                    { name: 'Gwangju', code: 'GWJ' },
+                    { name: 'Ulsan', code: 'ULS' }
+                ],
+                // target
+                []
+            ]);
 
-            return {};
+            function logSelected() {
+                const [, selected] = cities.value;
+                console.log('선택된 도시:', selected);
+                alert('선택된 도시 수: ' + selected.length + '\n' + selected.map(c => c.name).join(', '));
+            }
+
+            function reset() {
+                // target을 모두 source로 되돌립니다.
+                cities.value = [ [...cities.value[0], ...cities.value[1]], [] ];
+            }
+
+            return { cities, logSelected, reset };
         },
     });
 
-    // PrimeVue 등록
-    app.use(PrimeVue.Config, {theme: {preset: PrimeUIX.Themes.Aura}});
+    // PrimeVue 등록 (이미 존재하는 부분 유지)
+    app.use(PrimeVue.Config, { theme: { preset: PrimeUIX.Themes.Aura } });
 
-    const {Toolbar, Button} = PrimeVue;
-
+    const { Toolbar, Button, PickList } = PrimeVue;
     app.component('p-toolbar', Toolbar);
     app.component('p-button', Button);
+    app.component('p-pick-list', PickList);
 
+    // OverlayScrollbars 래퍼 (이미 존재하는 부분 유지)
     app.component('overlay-scrollbars', {
         props: ['style', 'class'],
         mounted() {
-            window.OverlayScrollbarsGlobal.OverlayScrollbars(this.$el, {scrollbars: {autoHide: 'scroll'}});
+            window.OverlayScrollbarsGlobal.OverlayScrollbars(this.$el, { scrollbars: { autoHide: 'scroll' } });
         },
         render() {
-            return Vue.h('div', {style: this.style, class: this.class}, this.$slots.default());
+            return Vue.h('div', { style: this.style, class: this.class }, this.$slots.default());
         }
     });
 
